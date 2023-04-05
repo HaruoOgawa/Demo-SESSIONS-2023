@@ -1,0 +1,151 @@
+R"(
+#version 430
+
+// thread
+layout(local_size_x = 1024, local_size_y = 1, local_size_z = 1) in;
+
+// Uniform 
+uniform float _time;
+uniform float _deltaTime;
+uniform vec4 _WallHalfSize;
+uniform float _FlowGridX;
+uniform float _FlowGridY;
+uniform float _FlowGridZ;
+uniform float _StepLength;
+uniform float _StepSpeed;
+
+//
+struct SFlowData
+{
+	vec4 Pos;
+	vec4 Angle;
+};
+
+layout(std430, binding = 2) buffer FlowDataBuffer
+{
+	SFlowData flowData[];
+} rw_FlowDataBuffer;
+
+struct STrailData
+{
+	vec4 Pos;
+	vec4 Rotate;
+	vec4 Scale;
+	vec4 Color;
+	vec4 Velocity;
+	vec4 TargetPos;
+	vec4 Data;
+};
+
+layout(std430, binding = 0) buffer TrailDataBuffer
+{
+	STrailData trailData[];
+} rw_TrailDataBuffer;
+
+//
+#define pi 3.14159265
+
+float Noise(vec2 st)
+{
+	return fract(sin(dot(st, vec2(12.9898, 78.233))) * 43758.5453123);
+}
+
+vec4 RefWall(vec4 v, vec4 p, inout bool IsWall)
+{
+	//float Shrink = 0.75;
+	float Shrink = 1.0;
+
+	if(abs(p.x) > _WallHalfSize.x * Shrink){ v.x = abs(v.x) * (-1.0) * sign(p.x); IsWall = true; }
+	if(abs(p.y) > _WallHalfSize.y * Shrink){ v.y = abs(v.y) * (-1.0) * sign(p.y); IsWall = true; }
+	if(abs(p.z) > _WallHalfSize.z * Shrink){ v.z = abs(v.z) * (-1.0) * sign(p.z); IsWall = true; }
+
+	return v;
+}
+
+vec3 hsv2rgb2(vec3 c, float k) {
+    return smoothstep(0. + k, 1. - k,
+        .5 + .5 * cos((vec3(c.x, c.x, c.x) + vec3(3., 2., 1.) / 3.) * radians(360.)));
+}
+
+#define rot(a) mat2(cos(a),-sin(a),sin(a),cos(a))
+
+void main()
+{
+	uint DID = gl_GlobalInvocationID.x;
+
+	//
+	STrailData trailData = rw_TrailDataBuffer.trailData[DID];
+	vec4 v = trailData.Velocity;
+	vec4 pos = trailData.Pos;
+	
+	//
+	vec4 addv = vec4(0.0);
+	vec4 Data = vec4(0.0);
+
+	// 更新する
+	if(length(trailData.TargetPos.xyz - pos.xyz) < 1e-3)
+	{
+		vec3 GridPos = pos.xyz / _WallHalfSize.xyz;
+		GridPos = GridPos * 0.5 + 0.5;
+		GridPos *= vec3(_FlowGridX - 1.0f, _FlowGridY - 1.0f, _FlowGridZ - 1.0f);
+		int GridID = int(floor(GridPos.z) * (_FlowGridX * _FlowGridY) + floor(GridPos.y) * _FlowGridX + floor(GridPos.x));
+
+		SFlowData flowData = rw_FlowDataBuffer.flowData[GridID];
+
+		addv = vec4(0.0, 1.0, 0.0, 0.0);
+		addv.xy *= rot(flowData.Angle.z);
+		addv.yz *= rot(flowData.Angle.x);
+
+		trailData.TargetPos = pos + addv * _StepLength;
+		
+		v.xyz = addv.xyz * _StepLength;
+	}
+
+	// 速度ベクトルを更新
+	//v.xyz += addv.xyz;
+
+	// 壁に当たっているのなら跳ね返す
+	bool IsWall = false;
+	v = RefWall(v, pos, IsWall);
+	
+	// 位置を更新
+	pos.xyz += v.xyz * _StepSpeed;
+
+	// 壁に当たっているのなら範囲内のランダムな位置に再配置する
+	if(IsWall)
+	{
+		//float Shrink = 0.75;
+		float Shrink = 1.0;
+
+		pos = vec4(
+			Shrink * _WallHalfSize.x * (Noise(vec2(DID, 0.741 + _time)) * 2.0 - 1.0),
+			Shrink * _WallHalfSize.y * (Noise(vec2(DID, 942.0 + _time)) * 2.0 - 1.0),
+			Shrink * _WallHalfSize.z * (Noise(vec2(DID, 77.7 + _time)) * 2.0 - 1.0),
+			1.0f
+		);
+
+		trailData.TargetPos = pos;
+
+		Data.x = 1.0;
+	}
+
+	// 速度ベクトルの向きから回転を取得
+	vec3 rotate = vec3(0.0), nv = normalize(v.xyz), zdir = vec3(0.0, 0.0, 1.0);
+	rotate.z = acos(dot(nv.xy, zdir.xy));
+	rotate.x = acos(dot(nv.yz, zdir.yz));
+
+	//
+	vec3 vc = normalize(v.xyz) * 0.5 + 0.5;
+	vec4 col = mix(vec4(vc, 1.0), vec4(hsv2rgb2(vec3( (vc.x+vc.y+vc.z)*0.33333 , 1.0, 1.0), 2.2), 1.0), Noise(vec2(float(DID), float(DID) * 10.0)) );
+
+	//
+	trailData.Pos =  pos;
+	trailData.Velocity = v;
+	trailData.Color = col;
+	trailData.Rotate = vec4(rotate, 1.0);
+	trailData.Data = Data;
+
+	rw_TrailDataBuffer.trailData[DID] = trailData;
+}
+
+)"
