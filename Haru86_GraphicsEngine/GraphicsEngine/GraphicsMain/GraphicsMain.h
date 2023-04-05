@@ -16,7 +16,7 @@ enum class ERerderingTarget
 };
 
 namespace sound { class SoundPlayer;}
-namespace app { class ArtReReRe; }
+namespace app { class Demo_SESSIONS_2023; }
 class TransformComponent;
 class MeshRendererComponent;
 
@@ -51,7 +51,7 @@ public:
 	std::shared_ptr<class CameraObject> game_camera_instance;
 	
 	//
-	app::ArtReReRe* m_App;
+	app::Demo_SESSIONS_2023* m_App;
 	ERerderingTarget renderingTarget;
 	unsigned int m_TargetFrameIndex;
 	bool isRunning;

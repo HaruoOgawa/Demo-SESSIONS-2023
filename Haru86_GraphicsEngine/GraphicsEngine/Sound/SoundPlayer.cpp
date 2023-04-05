@@ -9,7 +9,9 @@
 namespace sound 
 {
 	SoundPlayer::SoundPlayer():
-		m_IsMute(false)
+		m_IsMute(false),
+		m_FileName("edm_electronic_demoscene_hardkick _ain_traveler_1"),
+		m_Extension("mp3")
 	{
 		Initialize();
 	}
@@ -23,8 +25,8 @@ namespace sound
 		GetModuleFileName(NULL, ExePath, 256);
 		std::string ExeDir = GetExeDir(ExePath);
 
-		std::string AudioPath = "\"" + ExeDir + "\\" + "silentspace_nullptr_monet_keyboard.wav" + "\"";
-		std::string cmd = "open " + AudioPath + " alias wav";
+		std::string AudioPath = "\"" + ExeDir + "\\" + m_FileName + "." + m_Extension + "\"";
+		std::string cmd = "open " + AudioPath + " alias " + m_Extension;
 		
 		std::array<char, MAXERRORLENGTH> errorString;
 		mciGetErrorStringA(
@@ -44,9 +46,10 @@ namespace sound
 	{
 		if (m_IsMute) return Pause();
 
+		std::string cmd = "play " + m_Extension;
 		std::array<char, MAXERRORLENGTH> errorString;
 		mciGetErrorStringA(
-			mciSendStringA("play wav", nullptr, 0, nullptr),
+			mciSendStringA(cmd.c_str(), nullptr, 0, nullptr),
 			errorString.data(),
 			MAXERRORLENGTH);
 		//Console::Log(">>>>>>>>>>>>>>>>>>[Audio Error Log] %s\n", errorString.data());
@@ -54,7 +57,8 @@ namespace sound
 	}
 
 	bool SoundPlayer::Pause() {
-		mciSendStringA("pause wav", NULL, 0, NULL);
+		std::string cmd = "pause " + m_Extension;
+		mciSendStringA(cmd.c_str(), NULL, 0, NULL);
 
 		return true;
 	}
@@ -66,7 +70,7 @@ namespace sound
 		std::ostringstream ss;
 		ss << Offset;
 		std::string SkipOffset_str(ss.str());
-		std::string cmd = "seek wav to " + SkipOffset_str;
+		std::string cmd = "seek " + m_Extension + " to " + SkipOffset_str;
 
 		std::array<char, MAXERRORLENGTH> errorString;
 		mciGetErrorStringA(
@@ -84,7 +88,8 @@ namespace sound
 	}
 
 	void SoundPlayer::Release() {
-		mciSendStringA("close wav", NULL, 0, NULL);
+		std::string cmd = "close " + m_Extension;
+		mciSendStringA(cmd.c_str(), NULL, 0, NULL);
 	}
 
 	std::string SoundPlayer::GetExeDir(char path[]) {
