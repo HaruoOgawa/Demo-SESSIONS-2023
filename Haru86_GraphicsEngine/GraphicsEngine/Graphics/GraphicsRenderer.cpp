@@ -10,7 +10,7 @@
 #include "Texture.h"
 #include "GraphicsEngine/Graphics/PolygonRaymarchingMixer.h"
 #include "GraphicsEngine/Graphics/PostProcess.h"
-#include "Assets/App/ArtReReRe/ArtReReRe.h"
+#include "Assets/App/Demo_SESSIONS_2023/Demo_SESSIONS_2023.h"
 
 GraphicsRenderer* GraphicsRenderer::renderer_instance = nullptr;
 

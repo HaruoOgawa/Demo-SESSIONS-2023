@@ -315,7 +315,7 @@ xcopy "$(ProjectDir)Assets\Shader" "$(OutDir)Assets\Shader" /i /s /y
     <PostBuildEvent>
       <Command>xcopy "$(ProjectDir)GraphicsEngine\Library\GLEW\x64\bin\glew32d.dll" "$(OutDir)" /i /s /y
 xcopy "$(ProjectDir)GraphicsEngine\Library\GLFW\x64\lib\glfw3.dll" "$(OutDir)" /i /s /y
-xcopy "$(ProjectDir)Assets\Sound\silentspace_nullptr_monet_keyboard.wav" "$(OutDir)" /i /s /y
+xcopy "$(ProjectDir)Assets\Sound\edm_electronic_demoscene_hardkick _ain_traveler_1.mp3" "$(OutDir)" /i /s /y
 del /Q $(OutDir)Haru86_GraphicsEngine.pdb</Command>
     </PostBuildEvent>
     <PreBuildEvent>
@@ -344,7 +344,7 @@ del /Q $(OutDir)Haru86_GraphicsEngine.pdb</Command>
     <PostBuildEvent>
       <Command>xcopy "$(ProjectDir)GraphicsEngine\Library\GLEW\x64\bin\glew32d.dll" "$(OutDir)" /i /s /y
 xcopy "$(ProjectDir)GraphicsEngine\Library\GLFW\x64\lib\glfw3.dll" "$(OutDir)" /i /s /y
-xcopy "$(ProjectDir)Assets\Sound\silentspace_nullptr_monet_keyboard.wav" "$(OutDir)" /i /s /y
+xcopy "$(ProjectDir)Assets\Sound\edm_electronic_demoscene_hardkick _ain_traveler_1.mp3" "$(OutDir)" /i /s /y
 del /Q $(OutDir)Haru86_GraphicsEngine.pdb
 </Command>
     </PostBuildEvent>
@@ -375,7 +375,7 @@ del /Q $(OutDir)Haru86_GraphicsEngine.pdb
     <PostBuildEvent>
       <Command>xcopy "$(ProjectDir)GraphicsEngine\Library\GLEW\x64\bin\glew32d.dll" "$(OutDir)" /i /s /y
 xcopy "$(ProjectDir)GraphicsEngine\Library\GLFW\x64\lib\glfw3.dll" "$(OutDir)" /i /s /y
-xcopy "$(ProjectDir)Assets\Sound\silentspace_nullptr_monet_keyboard.wav" "$(OutDir)" /i /s /y
+xcopy "$(ProjectDir)Assets\Sound\edm_electronic_demoscene_hardkick _ain_traveler_1.mp3" "$(OutDir)" /i /s /y
 call squishy-x64 -i "$(OutDir)Haru86_GraphicsEngine.exe" -o "$(OutDir)Haru86_GraphicsEngine.exe"
 del /Q $(OutDir)Haru86_GraphicsEngine.pdb
 </Command>
@@ -419,6 +419,7 @@ xcopy "$(ProjectDir)GraphicsEngine\Assets\Sound\stroke.wav" "$(OutDir)" /i /s /y
   <ItemGroup>
     <ClInclude Include="Assets\App\ArtReReRe\ArtReReRe.h" />
     <ClInclude Include="Assets\App\ArtReReRe\scripts\CTrailObject.h" />
+    <ClInclude Include="Assets\App\Demo_SESSIONS_2023\Demo_SESSIONS_2023.h" />
     <ClInclude Include="GraphicsEngine\Graphics\ComputeBuffer.h" />
     <ClInclude Include="GraphicsEngine\Library\GLEW\x64\include\GL\glew.h" />
     <ClInclude Include="GraphicsEngine\Library\GLEW\x64\include\GL\glxew.h" />
@@ -453,6 +454,7 @@ xcopy "$(ProjectDir)GraphicsEngine\Assets\Sound\stroke.wav" "$(OutDir)" /i /s /y
   <ItemGroup>
     <ClCompile Include="Assets\App\ArtReReRe\ArtReReRe.cpp" />
     <ClCompile Include="Assets\App\ArtReReRe\scripts\CTrailObject.cpp" />
+    <ClCompile Include="Assets\App\Demo_SESSIONS_2023\Demo_SESSIONS_2023.cpp" />
     <ClCompile Include="GraphicsEngine\Graphics\ComputeBuffer.cpp" />
     <ClCompile Include="GraphicsEngine\GraphicsMain\GraphicsMain.cpp" />
     <ClCompile Include="GraphicsEngine\Graphics\GraphicsRenderer.cpp" />
