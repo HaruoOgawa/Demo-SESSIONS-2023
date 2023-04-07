@@ -417,8 +417,6 @@ xcopy "$(ProjectDir)GraphicsEngine\Assets\Sound\stroke.wav" "$(OutDir)" /i /s /y
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Assets\App\ArtReReRe\ArtReReRe.h" />
-    <ClInclude Include="Assets\App\ArtReReRe\scripts\CTrailObject.h" />
     <ClInclude Include="Assets\App\Demo_SESSIONS_2023\Demo_SESSIONS_2023.h" />
     <ClInclude Include="GraphicsEngine\Graphics\ComputeBuffer.h" />
     <ClInclude Include="GraphicsEngine\Library\GLEW\x64\include\GL\glew.h" />
@@ -452,8 +450,6 @@ xcopy "$(ProjectDir)GraphicsEngine\Assets\Sound\stroke.wav" "$(OutDir)" /i /s /y
     <ClInclude Include="GraphicsEngine\Sound\SoundPlayer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Assets\App\ArtReReRe\ArtReReRe.cpp" />
-    <ClCompile Include="Assets\App\ArtReReRe\scripts\CTrailObject.cpp" />
     <ClCompile Include="Assets\App\Demo_SESSIONS_2023\Demo_SESSIONS_2023.cpp" />
     <ClCompile Include="GraphicsEngine\Graphics\ComputeBuffer.cpp" />
     <ClCompile Include="GraphicsEngine\GraphicsMain\GraphicsMain.cpp" />
@@ -470,13 +466,6 @@ xcopy "$(ProjectDir)GraphicsEngine\Assets\Sound\stroke.wav" "$(OutDir)" /i /s /y
     <ClCompile Include="GraphicsEngine\Sound\SoundPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\App\ArtReReRe\shaders\Flow.comp" />
-    <None Include="Assets\App\ArtReReRe\shaders\Flow.vert" />
-    <None Include="Assets\App\ArtReReRe\shaders\Segment.comp" />
-    <None Include="Assets\App\ArtReReRe\shaders\Segment.geom" />
-    <None Include="Assets\App\ArtReReRe\shaders\Segment.vert" />
-    <None Include="Assets\App\ArtReReRe\shaders\Trail.comp" />
-    <None Include="Assets\App\ArtReReRe\shaders\Trail.vert" />
     <None Include="bin\libfreetype-6.dll" />
     <None Include="bin\SDL2_ttf.dll" />
     <None Include="bin\zlib1.dll" />
