@@ -1,7 +1,8 @@
-//#version 330
+R"(
+// #version 330
 
 // Veda --> OpenGL/GLSL
-#define DRAW_ON_VEDA
+//#define DRAW_ON_VEDA
 
 #ifdef DRAW_ON_VEDA
   precision mediump float;
@@ -33,6 +34,10 @@ vec2 pmod(vec2 p, float n)
   float a = mod(atan(p.y,p.x), tau) - 0.5 * tau;
   return length(a)*vec2(cos(a),sin(a));
 }
+
+struct mat{
+  float d,t,acc,mt,i;
+};
 
 ///////////////////////////////////////////////
 float map(vec3 pos)
@@ -102,8 +107,12 @@ vec3 gn(vec3 p)
       map(p+e.yyx)-map(p-e.yyx)
   ));
 }
+vec3 hsv2rgb2(vec3 c, float k) {
+    return smoothstep(0. + k, 1. - k,
+        .5 + .5 * cos((vec3(c.x, c.x, c.x) + vec3(3., 2., 1.) / 3.) * radians(360.)));
+}
 
-vec3 dColor(vec3 ro, vec3 rd, float i,float t,float d)
+vec3 dColor(vec3 ro, vec3 rd, float i,float t,float d,float acc)
 {
   vec3 col = vec3(0.0),p=ro+rd*t;
   if(d<0.001 && t < 1000.0)
@@ -111,7 +120,8 @@ vec3 dColor(vec3 ro, vec3 rd, float i,float t,float d)
     vec3 n = gn(p);
     // col=vec3(1.0) * max(0.0,dot(abs(n),lvec));
     // col += vec3(exp(-0.1*t));
-    col = vec3(1.0) * 5.0/i;
+    float flash = sin(p.z*0.1 + _time * 2.0) * 0.5 + 0.5;
+    col = vec3(1.0) * 5.0/i + vec3(1.0) * acc * 0.01 * hsv2rgb2(vec3(mod(_time * 2.0, 1.0), 1.0,1.0), 2.2) * flash;
   }
   return col;
 }
@@ -129,17 +139,20 @@ void main(){
     vec2 st=uv*2.0-1.0;
     st.x*=(_resolution.x/_resolution.y);
 #endif
-    float d,t,l=0.0,r=5.0,s=2.0;
+    st*=rot(-_time*0.1);
+    float d,t,l=0.0,r=5.0,s=2.0,acc=0.0;
     vec3 col=vec3(0.0),ro=vec3(0.05*r*cos(s*_time),0.05*r*sin(s*_time),r),ta=vec3(0.0),cdir=normalize(ta-ro),cside=normalize(cross(vec3(0.0,1.0,0.0),cdir)),cup=normalize(cross(cdir,cside)),rd=normalize(st.x*cside+st.y*cup+1.0*cdir);
 
-    for(float i=0.0;i<128.0;i++)
+    for(float i=0.0;i<256.0;i++)
     {
       d=map(ro+rd*t);
       if(d<0.001 || t>1000.0){l=i; break;}
       t+=max(0.0001,d*0.75);
+      acc+=exp(-3.0*d);
     }
 
-    col = dColor(ro, rd, l, t, d);
+    col = dColor(ro, rd, l, t, d,acc);
     gl_FragColor = vec4(col,1.0);
   }
 }
+)"

@@ -30,7 +30,7 @@ namespace app
             RenderingSurfaceType::RAYMARCHING,
             shaderlib::StandardRenderBoard_vert,
             std::string({
-#include "shader/RayBloomTest.frag"
+#include "shader/ray01.frag"
             })
         );
 
