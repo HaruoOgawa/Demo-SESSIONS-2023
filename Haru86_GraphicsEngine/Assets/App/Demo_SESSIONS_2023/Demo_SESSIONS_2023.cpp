@@ -35,8 +35,8 @@ namespace app
         );
 
         PostProcess::GetInstance()->m_UseBloom = true;
-        PostProcess::GetInstance()->m_BloomIntensity = 1.5f;
-        PostProcess::GetInstance()->m_BloomThreshold = 0.25f;
+        PostProcess::GetInstance()->m_BloomIntensity = 2.0f;
+        PostProcess::GetInstance()->m_BloomThreshold = 0.5f;
 
 #ifdef _DEBUG
         //GraphicsMain::GetInstance()->m_ShowDebugLog = true;

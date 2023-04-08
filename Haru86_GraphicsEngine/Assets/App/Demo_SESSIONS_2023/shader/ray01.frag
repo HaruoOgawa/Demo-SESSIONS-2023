@@ -1,5 +1,5 @@
 R"(
-// #version 330
+#version 330
 
 // Veda --> OpenGL/GLSL
 //#define DRAW_ON_VEDA
@@ -39,11 +39,16 @@ struct mat{
   float d,t,acc,mt,i;
 };
 
+float rand(vec2 p)
+{
+    return fract( sin(dot(p,vec2(12.9898,78.233)))*43758.5453123 );
+}
+
 ///////////////////////////////////////////////
 float map(vec3 pos)
 {
   cp = 3.0;
-  float d0=1000.0,d1=1000.0,d2=1000.0,k=7.5;
+  float d0=1000.0,d1=1000.0,d2=1000.0,k=7.5,sp=0.5,ftf=pow(fract(_time*sp),-0.25),ft=floor(_time*sp)+ftf;
   {
     d2 = cube(pos,vec3(0.5,0.5,5.0));
   }
@@ -54,8 +59,10 @@ float map(vec3 pos)
   // pos.z -= _time;
   // pos.z = mod(pos.z,k)-k*.5;
 
-
-pos.xy*=rot(pi/4.0);
+pos.xy*=rot(pi/4.0 * step(0.5,fract(_time * 0.5)));
+pos.yz*=rot(pi/4.0 * step(fract(_time  * 0.5),0.5));
+// pos.xy*=rot(ft);
+// pos.yz*=rot(ft);
 
   {
       vec3 p = pos;
@@ -71,7 +78,7 @@ pos.xy*=rot(pi/4.0);
         p = abs(p) -0.5;
         p.xy *= rot(1.5);
         p.x *= 1.25;
-        p.yz *= rot(0.5);
+        p.yz *= rot(ft);
 
         p = abs(p);
 
@@ -79,7 +86,7 @@ pos.xy*=rot(pi/4.0);
         if(p.x<p.z)p.xz = p.zx;
         if(p.y<p.z)p.yz = p.zy;
 
-        p.xz*=rot(0.5);
+        p.xz*=rot(0.5 -0.25);
       }
       d0 = cube(p,vec3(0.25));
   }
@@ -96,11 +103,11 @@ pos.xy*=rot(pi/4.0);
 
 ///////////////////////////////////////////////
 
-#define lvec normalize(vec3(1.0,-1.0,-1.0))
+#define ldir normalize(vec3(1.0,-1.0,-1.0))
 
 vec3 gn(vec3 p)
 {
-  vec2 e = vec2(0.001,0.0);
+  vec2 e = vec2(0.1,0.0);
   return normalize(vec3(
       map(p+e.xyy)-map(p-e.xyy),
       map(p+e.yxy)-map(p-e.yxy),
@@ -114,18 +121,26 @@ vec3 hsv2rgb2(vec3 c, float k) {
 
 vec3 dColor(vec3 ro, vec3 rd, float i,float t,float d,float acc)
 {
-  vec3 col = vec3(0.0),p=ro+rd*t;
+  vec3 col = vec3(1.0),p=ro+rd*t;
   if(d<0.001 && t < 1000.0)
   {
     vec3 n = gn(p);
-    // col=vec3(1.0) * max(0.0,dot(abs(n),lvec));
-    // col += vec3(exp(-0.1*t));
-    float flash = sin(p.z*0.1 + _time * 2.0) * 0.5 + 0.5;
-    col = vec3(1.0) * 5.0/i + vec3(1.0) * acc * 0.01 * hsv2rgb2(vec3(mod(_time * 2.0, 1.0), 1.0,1.0), 2.2) * flash;
+    // col=(n*0.5+0.5);
+    float diff = max(0.0, dot(ldir, n));
+    vec3 hdir = normalize(rd + ldir);
+    float spec = pow(max(0.0, dot(hdir,n)), 60.0);
+    col = vec3(1.0) * diff + vec3(1.0) * spec;
   }
+
+  float flash = sin(p.z*0.1 + _time * 2.0) * 0.5 + 0.5;
+  col += vec3(1.0) * acc * 0.025 * hsv2rgb2(vec3(mod(_time * 2.0, 1.0), 1.0,1.0), 2.2) * flash;
+  vec3 fog = exp2(-0.025*t*vec3(1.0));
+  col=mix(vec3(1.0),col,fog);
+
   return col;
 }
 //////////////////////////////////////////////
+#define cdef(a) 0.1*r*vec3(cos(a),sin(a),sin(a))
 void main(){
   if(_RenderingTarget==2) // ZTest
   {
@@ -140,8 +155,22 @@ void main(){
     st.x*=(_resolution.x/_resolution.y);
 #endif
     st*=rot(-_time*0.1);
-    float d,t,l=0.0,r=5.0,s=2.0,acc=0.0;
-    vec3 col=vec3(0.0),ro=vec3(0.05*r*cos(s*_time),0.05*r*sin(s*_time),r),ta=vec3(0.0),cdir=normalize(ta-ro),cside=normalize(cross(vec3(0.0,1.0,0.0),cdir)),cup=normalize(cross(cdir,cside)),rd=normalize(st.x*cside+st.y*cup+1.0*cdir);
+    float d,t,l=0.0,r=5.0,s=2.0,acc=0.0,zfactor=1.0-0.5*length(st),blurPower = 0.05,l_time = _time + (rand(st)*blurPower-blurPower),c0=0.5,c1=1.5,c2=2.8;
+    vec3 ro=vec3(0.05*r*cos(s*l_time),0.05*r*sin(s*l_time),r*sin(s*l_time)*cos(s*l_time));
+    /*float cseek = fract(_time * 0.5);
+    if(cseek < 0.333)
+    {
+      ro = mix(cdef(c0),cdef(c1),mod(cseek,0.333)*(1.0/0.333));
+    }
+    else if(cseek >= 0.333 && cseek < 0.333*2.0)
+    {
+      ro = mix(cdef(c1),cdef(c2),mod(cseek,0.333)*(1.0/0.333));
+    }
+    else
+    {
+      ro = mix(cdef(c2),cdef(c0),mod(cseek,0.333)*(1.0/0.333));
+    }*/
+    vec3 col=vec3(0.0),ta=vec3(0.0),cdir=normalize(ta-ro),cside=normalize(cross(vec3(0.0,1.0,0.0),cdir)),cup=normalize(cross(cdir,cside)),rd=normalize(st.x*cside+st.y*cup+zfactor*cdir);
 
     for(float i=0.0;i<256.0;i++)
     {
