@@ -9,6 +9,8 @@ R"(
   uniform float time;
   uniform vec2 resolution;
   const int _RenderingTarget = 1;
+  int _IsTransform = 0;
+  int _UseBloom = 0;
 
   #define _time time
   #define _resolution resolution
@@ -18,6 +20,8 @@ R"(
   uniform float _RenderingTarget;
   uniform vec3 _WorldCameraPos;
   uniform vec3 _WorldCameraCenter;
+  uniform int _IsTransform;
+  uniform int _UseBloom;
 
   in vec2 uv;
 #endif
@@ -59,10 +63,16 @@ float map(vec3 pos)
   // pos.z -= _time;
   // pos.z = mod(pos.z,k)-k*.5;
 
-pos.xy*=rot(pi/4.0 * step(0.5,fract(_time * 0.5)));
-pos.yz*=rot(pi/4.0 * step(fract(_time  * 0.5),0.5));
-// pos.xy*=rot(ft);
-// pos.yz*=rot(ft);
+  if(_IsTransform == 0)
+  {
+    pos.xy*=rot(pi/4.0 * 0.0);
+    pos.yz*=rot(pi/4.0 * 1.0);
+  }
+  else
+  {
+    pos.xy*=rot(pi/4.0 * 1.0);
+    pos.yz*=rot(pi/4.0 * 0.0);
+  }
 
   {
       vec3 p = pos;
@@ -129,11 +139,15 @@ vec3 dColor(vec3 ro, vec3 rd, float i,float t,float d,float acc)
     float diff = max(0.0, dot(ldir, n));
     vec3 hdir = normalize(rd + ldir);
     float spec = pow(max(0.0, dot(hdir,n)), 60.0);
-    col = vec3(1.0) * diff + vec3(1.0) * spec;
+    col = vec3(0.1) * diff + vec3(1.0) * spec;
   }
 
-  float flash = sin(p.z*0.1 + _time * 2.0) * 0.5 + 0.5;
-  col += vec3(1.0) * acc * 0.025 * hsv2rgb2(vec3(mod(_time * 2.0, 1.0), 1.0,1.0), 2.2) * flash;
+  if(_UseBloom == 1)
+  {
+    float flash = sin(p.z*0.1 + _time * 10.0) * 0.5 + 0.5;
+    col += vec3(1.0) * acc * 0.1 * hsv2rgb2(vec3(mod(_time * 2.0, 1.0), 1.0,1.0), 2.2) * flash;
+  }
+  
   vec3 fog = exp2(-0.025*t*vec3(1.0));
   col=mix(vec3(1.0),col,fog);
 
@@ -156,7 +170,8 @@ void main(){
 #endif
     st*=rot(-_time*0.1);
     float d,t,l=0.0,r=5.0,s=2.0,acc=0.0,zfactor=1.0-0.5*length(st),blurPower = 0.05,l_time = _time + (rand(st)*blurPower-blurPower),c0=0.5,c1=1.5,c2=2.8;
-    vec3 ro=vec3(0.05*r*cos(s*l_time),0.05*r*sin(s*l_time),r*sin(s*l_time)*cos(s*l_time));
+    //vec3 ro=vec3(0.05*r*cos(s*l_time),0.05*r*sin(s*l_time),r*sin(s*l_time)*cos(s*l_time));
+    vec3 ro=vec3(0.05*r*cos(s*l_time),0.05*r*sin(s*l_time),r);
     /*float cseek = fract(_time * 0.5);
     if(cseek < 0.333)
     {

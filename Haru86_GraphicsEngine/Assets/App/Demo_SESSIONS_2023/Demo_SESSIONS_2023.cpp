@@ -17,8 +17,8 @@ namespace app
         m_SceneIndex(0),
         m_SceneStartTime(0.0f),
         m_SceneEndTime(0.0f),
-        m_LocalTime(0.0f),
-        m_TestMeshRenderer(nullptr)
+        m_TestMeshRenderer(nullptr),
+        m_IsTransform(0)
     {
     }
 
@@ -34,12 +34,24 @@ namespace app
             })
         );
 
-        PostProcess::GetInstance()->m_UseBloom = true;
+        PostProcess::GetInstance()->m_UseBloom = false;
         PostProcess::GetInstance()->m_BloomIntensity = 2.0f;
         PostProcess::GetInstance()->m_BloomThreshold = 0.5f;
 
 #ifdef _DEBUG
-        //GraphicsMain::GetInstance()->m_ShowDebugLog = true;
+        GraphicsMain::GetInstance()->m_ShowDebugLog = true;
+
+        // 時間のオフセット
+        //GraphicsMain::GetInstance()->m_SecondsTimeOffset = 0.0f;// シーンを飛ばすためのオフセット
+
+        // 音楽のミュート
+        //GraphicsMain::GetInstance()->m_SoundPlayer->Mute(true);
+
+        // デバッグ用
+        /*{
+            m_DebugTimeLock = true;
+            if (m_DebugTimeLock)m_LocalTime = GraphicsMain::GetInstance()->m_SecondsTimeOffset;
+        }*/
 #endif // _DEBUG
 
     }
@@ -58,6 +70,9 @@ namespace app
         if (IsRaymarching)
         {
             m_TestMeshRenderer->Draw([&]() {
+                m_TestMeshRenderer->m_material->SetIntUniform("_IsTransform", m_IsTransform);
+                m_TestMeshRenderer->m_material->SetIntUniform("_UseBloom", ((PostProcess::GetInstance()->m_UseBloom)? 1 : 0));
+
                 m_TestMeshRenderer->m_material->SetIntUniform("_UseColor", 1);
                 m_TestMeshRenderer->m_material->SetVec4Uniform("_Color", glm::vec4(glm::vec3(2.0f, 0.0f, 0.0f), 1.0f));
                 });
@@ -68,7 +83,16 @@ namespace app
         }
     }
 
-    void Demo_SESSIONS_2023::UpdateTimeline()
+    void Demo_SESSIONS_2023::UpdateTimeline(float SceneTime)
     {
+        if (SceneTime < 54.0f)
+        {
+            PostProcess::GetInstance()->m_UseBloom = false;
+        }
+        else
+        {
+            PostProcess::GetInstance()->m_UseBloom = true;
+            m_IsTransform = 1;
+        }
     }
 }

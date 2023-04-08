@@ -10,9 +10,9 @@ namespace app
         unsigned int m_SceneIndex;
         float        m_SceneStartTime;
         float        m_SceneEndTime;
-        float        m_LocalTime;
 
         std::shared_ptr<MeshRendererComponent> m_TestMeshRenderer;
+        int          m_IsTransform;
 
     public:
         Demo_SESSIONS_2023();
@@ -21,7 +21,7 @@ namespace app
         void Start();
         void Update();
         void Draw(bool IsRaymarching);
-        void UpdateTimeline();
+        void UpdateTimeline(float SceneTime);
 
         unsigned int GetSceneIndex()const { return m_SceneIndex; }
         float        GetSceneStartTime() const { return m_SceneStartTime; }

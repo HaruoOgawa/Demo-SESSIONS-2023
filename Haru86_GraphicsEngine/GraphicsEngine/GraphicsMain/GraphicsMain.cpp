@@ -128,7 +128,7 @@ float GraphicsMain::GetSceneEndTime() const
 }
 
 void GraphicsMain::UpdateTimeline() {
-	m_App->UpdateTimeline();
+	m_App->UpdateTimeline(m_SecondsTime);
 }
 
 void GraphicsMain::InputProcess() {
