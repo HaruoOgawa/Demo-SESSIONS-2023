@@ -21,10 +21,18 @@
   in vec2 uv;
 #endif
 
+#define pi 3.1415
 #define rot(a) mat2(cos(a),-sin(a),sin(a),cos(a))
 #define cube(p,s) length(max(vec3(0.0), abs(p)-s))
 
 float cp;
+
+vec2 pmod(vec2 p, float n)
+{
+  float tau = 2.0*pi/n;
+  float a = mod(atan(p.y,p.x), tau) - 0.5 * tau;
+  return length(a)*vec2(cos(a),sin(a));
+}
 
 ///////////////////////////////////////////////
 float map(vec3 pos)
@@ -35,23 +43,32 @@ float map(vec3 pos)
     d2 = cube(pos,vec3(0.5,0.5,5.0));
   }
 
-  pos.z -= _time;
+  // pos.xy=pmod(pos.xy,6.0);
+  pos.z -= _time * 5.0;
   pos = mod(pos,k)-k*.5;
+  // pos.z -= _time;
+  // pos.z = mod(pos.z,k)-k*.5;
+
+
+pos.xy*=rot(pi/4.0);
 
   {
       vec3 p = pos;
       //
+      p = abs(p) - 0.1;
 
       if(p.x<p.y)p.xy = p.yx;
       if(p.x<p.z)p.xz = p.zx;
       if(p.y<p.z)p.yz = p.zy;
 
-      for(int i = 0; i < 8; i++)
+      for(int i = 0; i < 7; i++)
       {
         p = abs(p) -0.5;
         p.xy *= rot(1.5);
         p.x *= 1.25;
         p.yz *= rot(0.5);
+
+        p = abs(p);
 
         if(p.x<p.y)p.xy = p.yx;
         if(p.x<p.z)p.xz = p.zx;
@@ -59,7 +76,7 @@ float map(vec3 pos)
 
         p.xz*=rot(0.5);
       }
-      d0 = cube(p,vec3(0.5));
+      d0 = cube(p,vec3(0.25));
   }
 
   {
@@ -112,14 +129,14 @@ void main(){
     vec2 st=uv*2.0-1.0;
     st.x*=(_resolution.x/_resolution.y);
 #endif
-    float d,t,l=0.0,r=10.0;
-    vec3 col=vec3(0.0),ro=vec3(0.05*r*cos(_time),0.05*r*sin(_time),r),ta=vec3(0.0),cdir=normalize(ta-ro),cside=normalize(cross(vec3(0.0,1.0,0.0),cdir)),cup=normalize(cross(cdir,cside)),rd=normalize(st.x*cside+st.y*cup+1.0*cdir);
+    float d,t,l=0.0,r=5.0,s=2.0;
+    vec3 col=vec3(0.0),ro=vec3(0.05*r*cos(s*_time),0.05*r*sin(s*_time),r),ta=vec3(0.0),cdir=normalize(ta-ro),cside=normalize(cross(vec3(0.0,1.0,0.0),cdir)),cup=normalize(cross(cdir,cside)),rd=normalize(st.x*cside+st.y*cup+1.0*cdir);
 
     for(float i=0.0;i<128.0;i++)
     {
       d=map(ro+rd*t);
       if(d<0.001 || t>1000.0){l=i; break;}
-      t+=max(0.0001,d*0.5);
+      t+=max(0.0001,d*0.75);
     }
 
     col = dColor(ro, rd, l, t, d);
