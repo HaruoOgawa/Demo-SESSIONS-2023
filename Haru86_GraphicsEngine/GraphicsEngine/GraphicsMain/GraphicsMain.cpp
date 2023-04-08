@@ -141,19 +141,6 @@ void GraphicsMain::key_callback(GLFWwindow* window, int key, int scancode, int a
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 		GraphicsMain::GetInstance()->isRunning=false;
 	}
-#ifdef _DEBUG
-	else if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
-	{
-		//Console::Log("Space Push\n");
-		GraphicsMain::GetInstance()->m_ShowDebugLog = true;
-	}
-	else if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE)
-	{
-		//Console::Log("Space Release\n");
-		GraphicsMain::GetInstance()->m_ShowDebugLog = false;
-	}
-#endif // _DEBUG
-
 }
 
 void GraphicsMain::Update() {
@@ -165,7 +152,7 @@ void GraphicsMain::Update() {
 #ifdef _DEBUG
 	// FPSÇÃåvë™Ç∆ï\é¶(60FPSÇäÓèÄÇ∆Ç∑ÇÈ)
 	float FPS = 60.0f / (m_DeltaTime * 60.0f);
-	//Console::Log("[FPS] %f fps / [CurrentTime] %f s\n", FPS, m_SecondsTime);
+	if(m_ShowDebugLog) Console::Log("[FPS] %f fps / [CurrentTime] %f s\n", FPS, m_SecondsTime);
 #endif // _DEBUG
 
 	previousTime = m_MilliSecondsTime;

@@ -1,6 +1,8 @@
 #pragma once
 #include <memory>
 
+class MeshRendererComponent;
+
 namespace app
 {
     class Demo_SESSIONS_2023
@@ -9,6 +11,8 @@ namespace app
         float        m_SceneStartTime;
         float        m_SceneEndTime;
         float        m_LocalTime;
+
+        std::shared_ptr<MeshRendererComponent> m_TestMeshRenderer;
 
     public:
         Demo_SESSIONS_2023();

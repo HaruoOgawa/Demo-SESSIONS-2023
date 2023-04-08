@@ -418,6 +418,7 @@ xcopy "$(ProjectDir)GraphicsEngine\Assets\Sound\stroke.wav" "$(OutDir)" /i /s /y
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Assets\App\Demo_SESSIONS_2023\Demo_SESSIONS_2023.h" />
+    <ClInclude Include="GraphicsEngine\Graphics\CBloom.h" />
     <ClInclude Include="GraphicsEngine\Graphics\ComputeBuffer.h" />
     <ClInclude Include="GraphicsEngine\Library\GLEW\x64\include\GL\glew.h" />
     <ClInclude Include="GraphicsEngine\Library\GLEW\x64\include\GL\glxew.h" />
@@ -451,6 +452,7 @@ xcopy "$(ProjectDir)GraphicsEngine\Assets\Sound\stroke.wav" "$(OutDir)" /i /s /y
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\App\Demo_SESSIONS_2023\Demo_SESSIONS_2023.cpp" />
+    <ClCompile Include="GraphicsEngine\Graphics\CBloom.cpp" />
     <ClCompile Include="GraphicsEngine\Graphics\ComputeBuffer.cpp" />
     <ClCompile Include="GraphicsEngine\GraphicsMain\GraphicsMain.cpp" />
     <ClCompile Include="GraphicsEngine\Graphics\GraphicsRenderer.cpp" />

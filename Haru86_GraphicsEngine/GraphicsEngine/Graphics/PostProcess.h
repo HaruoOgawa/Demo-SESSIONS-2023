@@ -3,10 +3,15 @@
 #include <functional>
 
 class Texture;
+class CBloom;
 class MeshRendererComponent;
 
 class PostProcess
 {
+	//bloom
+	std::unique_ptr<CBloom> m_Bloom;
+	std::shared_ptr<Texture> m_BloomTexture;
+	unsigned int m_BloomFrameBuffer;
 public:
 	static void CreateInstance();
 	static PostProcess* GetInstance();
@@ -22,6 +27,11 @@ public:
 
 	// SSR
 	bool m_UseSSR;
+
+	//bloom
+	bool m_UseBloom;
+	float m_BloomIntensity;
+	float m_BloomThreshold;
 protected:
 	static PostProcess* instance;
 };

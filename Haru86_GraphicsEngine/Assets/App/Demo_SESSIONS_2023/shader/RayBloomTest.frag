@@ -1,5 +1,8 @@
+R"(
+#version 330
+
 // Veda --> OpenGL/GLSL
-#define DRAW_ON_VEDA
+//#define DRAW_ON_VEDA
 
 #ifdef DRAW_ON_VEDA
   precision mediump float;
@@ -10,7 +13,7 @@
   #define _time time
   #define _resolution resolution
 #else
-  #version 330
+  
 
   uniform float _time;
   uniform vec2 _resolution;
@@ -64,8 +67,9 @@ void main(){
       t+=d;
     }
 
-    col=vec3(exp(-0.1*t));
+    col=vec3(exp(-0.1*t)) * 2.0;
 
     gl_FragColor = vec4(col,1.0);
   }
 }
+)"
