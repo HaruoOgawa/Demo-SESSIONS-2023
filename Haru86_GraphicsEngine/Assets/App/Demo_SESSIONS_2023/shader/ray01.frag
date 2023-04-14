@@ -2,10 +2,10 @@ precision mediump float;
 uniform float time;
 uniform vec2 resolution;
 
-#define pi 3.1415
-#define rot(a) mat2(cos(a),-sin(a),sin(a),cos(a))
-#define cube(p,s) length(max(vec3(0.0), abs(p)-s))
-#define rand(p) fract( sin(dot(p,vec2(12.9898,78.233)))*43758.5453123 )
+const float pi = 3.1415;
+mat2 rot(float a){return mat2(cos(a),-sin(a),sin(a),cos(a));}
+float cube(vec3 p,vec3 s) {return length(max(vec3(0.0), abs(p)-s));}
+float rand(vec2 p) {return fract( sin(dot(p,vec2(12.9898,78.233)))*43758.5453123 );}
 
 float map(vec3 pos)
 {
@@ -50,7 +50,7 @@ float map(vec3 pos)
   return max(d0,d1);
 }
 
-#define ldir normalize(vec3(1.0,-1.0,-1.0))
+vec3 ldir = normalize(vec3(1.0,-1.0,-1.0));
 
 vec3 gn(vec3 p)
 {
