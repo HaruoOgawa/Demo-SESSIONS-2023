@@ -417,9 +417,14 @@ xcopy "$(ProjectDir)GraphicsEngine\Assets\Sound\stroke.wav" "$(OutDir)" /i /s /y
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Assets\App\ArtReReRe\ArtReReRe.h" />
-    <ClInclude Include="Assets\App\ArtReReRe\scripts\CTrailObject.h" />
     <ClInclude Include="Assets\App\Demo_SESSIONS_2023\Demo_SESSIONS_2023.h" />
+    <ClInclude Include="Assets\App\Demo_SESSIONS_2023\Script\Forest\Flower.h" />
+    <ClInclude Include="Assets\App\Demo_SESSIONS_2023\Script\Forest\FlowerModel.h" />
+    <ClInclude Include="Assets\App\Demo_SESSIONS_2023\Script\Forest\Forest.h" />
+    <ClInclude Include="Assets\App\Demo_SESSIONS_2023\Script\Forest\LTree.h" />
+    <ClInclude Include="Assets\App\Demo_SESSIONS_2023\Script\Forest\LTreeModel.h" />
+    <ClInclude Include="Assets\App\Demo_SESSIONS_2023\Script\Forest\Stem.h" />
+    <ClInclude Include="GraphicsEngine\Graphics\CBloom.h" />
     <ClInclude Include="GraphicsEngine\Graphics\ComputeBuffer.h" />
     <ClInclude Include="GraphicsEngine\Library\GLEW\x64\include\GL\glew.h" />
     <ClInclude Include="GraphicsEngine\Library\GLEW\x64\include\GL\glxew.h" />
@@ -434,6 +439,8 @@ xcopy "$(ProjectDir)GraphicsEngine\Assets\Sound\stroke.wav" "$(OutDir)" /i /s /y
     <ClInclude Include="GraphicsEngine\Library\GLFW\x86\include\GLFW\glfw3native.h" />
     <ClInclude Include="GraphicsEngine\Graphics\EGraphicsParam.h" />
     <ClInclude Include="GraphicsEngine\Graphics\ShaderLib.h" />
+    <ClInclude Include="GraphicsEngine\Math\mymath.h" />
+    <ClInclude Include="GraphicsEngine\Math\mymath_withGLM.h" />
     <ClInclude Include="GraphicsEngine\Message\Console.h" />
     <ClInclude Include="GraphicsEngine\Library\tinygltf\json.hpp" />
     <ClInclude Include="GraphicsEngine\Library\tinygltf\stb_image.h" />
@@ -452,9 +459,14 @@ xcopy "$(ProjectDir)GraphicsEngine\Assets\Sound\stroke.wav" "$(OutDir)" /i /s /y
     <ClInclude Include="GraphicsEngine\Sound\SoundPlayer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Assets\App\ArtReReRe\ArtReReRe.cpp" />
-    <ClCompile Include="Assets\App\ArtReReRe\scripts\CTrailObject.cpp" />
     <ClCompile Include="Assets\App\Demo_SESSIONS_2023\Demo_SESSIONS_2023.cpp" />
+    <ClCompile Include="Assets\App\Demo_SESSIONS_2023\Script\Forest\Flower.cpp" />
+    <ClCompile Include="Assets\App\Demo_SESSIONS_2023\Script\Forest\FlowerModel.cpp" />
+    <ClCompile Include="Assets\App\Demo_SESSIONS_2023\Script\Forest\Forest.cpp" />
+    <ClCompile Include="Assets\App\Demo_SESSIONS_2023\Script\Forest\LTree.cpp" />
+    <ClCompile Include="Assets\App\Demo_SESSIONS_2023\Script\Forest\LTreeModel.cpp" />
+    <ClCompile Include="Assets\App\Demo_SESSIONS_2023\Script\Forest\Stem.cpp" />
+    <ClCompile Include="GraphicsEngine\Graphics\CBloom.cpp" />
     <ClCompile Include="GraphicsEngine\Graphics\ComputeBuffer.cpp" />
     <ClCompile Include="GraphicsEngine\GraphicsMain\GraphicsMain.cpp" />
     <ClCompile Include="GraphicsEngine\Graphics\GraphicsRenderer.cpp" />
@@ -470,13 +482,6 @@ xcopy "$(ProjectDir)GraphicsEngine\Assets\Sound\stroke.wav" "$(OutDir)" /i /s /y
     <ClCompile Include="GraphicsEngine\Sound\SoundPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\App\ArtReReRe\shaders\Flow.comp" />
-    <None Include="Assets\App\ArtReReRe\shaders\Flow.vert" />
-    <None Include="Assets\App\ArtReReRe\shaders\Segment.comp" />
-    <None Include="Assets\App\ArtReReRe\shaders\Segment.geom" />
-    <None Include="Assets\App\ArtReReRe\shaders\Segment.vert" />
-    <None Include="Assets\App\ArtReReRe\shaders\Trail.comp" />
-    <None Include="Assets\App\ArtReReRe\shaders\Trail.vert" />
     <None Include="bin\libfreetype-6.dll" />
     <None Include="bin\SDL2_ttf.dll" />
     <None Include="bin\zlib1.dll" />

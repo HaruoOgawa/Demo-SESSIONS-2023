@@ -2,7 +2,7 @@
  * http://www.ctrl-alt-test.fr
  */
 
-// E:\CppDev\Art_ReReRe\Haru86_GraphicsEngine\GraphicsEngine\Graphics\Shader\Standard_Frag.h
+// E:\CppDev\Demo-SESSIONS-2023\Haru86_GraphicsEngine\GraphicsEngine\Graphics\Shader\Standard_Frag.h
 "#version 430\n"
  "#extension GL_ARB_separate_shader_objects:enable\n"
  "layout(location=0) in vec2 in_uv;"

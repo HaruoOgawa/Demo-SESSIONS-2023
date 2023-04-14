@@ -1,6 +1,12 @@
 #pragma once
 #include <memory>
 
+class MeshRendererComponent;
+
+namespace myapp {
+    class Forest;
+}
+
 namespace app
 {
     class Demo_SESSIONS_2023
@@ -8,8 +14,8 @@ namespace app
         unsigned int m_SceneIndex;
         float        m_SceneStartTime;
         float        m_SceneEndTime;
-        float        m_LocalTime;
 
+        std::shared_ptr<myapp::Forest> m_Forest;
     public:
         Demo_SESSIONS_2023();
         ~Demo_SESSIONS_2023() = default;
@@ -17,7 +23,7 @@ namespace app
         void Start();
         void Update();
         void Draw(bool IsRaymarching);
-        void UpdateTimeline();
+        void UpdateTimeline(float SceneTime);
 
         unsigned int GetSceneIndex()const { return m_SceneIndex; }
         float        GetSceneStartTime() const { return m_SceneStartTime; }
