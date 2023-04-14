@@ -3,6 +3,10 @@
 
 class MeshRendererComponent;
 
+namespace myapp {
+    class Forest;
+}
+
 namespace app
 {
     class Demo_SESSIONS_2023
@@ -10,6 +14,8 @@ namespace app
         unsigned int m_SceneIndex;
         float        m_SceneStartTime;
         float        m_SceneEndTime;
+
+        std::shared_ptr<myapp::Forest> m_Forest;
     public:
         Demo_SESSIONS_2023();
         ~Demo_SESSIONS_2023() = default;
