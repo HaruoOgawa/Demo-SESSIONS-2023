@@ -10,10 +10,6 @@ namespace app
         unsigned int m_SceneIndex;
         float        m_SceneStartTime;
         float        m_SceneEndTime;
-
-        std::shared_ptr<MeshRendererComponent> m_TestMeshRenderer;
-        int          m_IsTransform;
-
     public:
         Demo_SESSIONS_2023();
         ~Demo_SESSIONS_2023() = default;

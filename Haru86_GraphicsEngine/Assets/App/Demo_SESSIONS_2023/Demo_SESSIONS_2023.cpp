@@ -16,28 +16,12 @@ namespace app
     Demo_SESSIONS_2023::Demo_SESSIONS_2023() :
         m_SceneIndex(0),
         m_SceneStartTime(0.0f),
-        m_SceneEndTime(0.0f),
-        m_TestMeshRenderer(nullptr),
-        m_IsTransform(0)
+        m_SceneEndTime(0.0f)
     {
     }
 
     void Demo_SESSIONS_2023::Start()
     {
-        m_TestMeshRenderer = std::make_shared<MeshRendererComponent>(
-            std::make_shared<TransformComponent>(),
-            PrimitiveType::BOARD,
-            RenderingSurfaceType::RAYMARCHING,
-            shaderlib::StandardRenderBoard_vert,
-            std::string({
-#include "shader/ray01.frag"
-            })
-        );
-
-        PostProcess::GetInstance()->m_UseBloom = false;
-        PostProcess::GetInstance()->m_BloomIntensity = 2.0f;
-        PostProcess::GetInstance()->m_BloomThreshold = 0.5f;
-
 #ifdef _DEBUG
         GraphicsMain::GetInstance()->m_ShowDebugLog = true;
 
@@ -45,7 +29,7 @@ namespace app
         //GraphicsMain::GetInstance()->m_SecondsTimeOffset = 0.0f;// シーンを飛ばすためのオフセット
 
         // 音楽のミュート
-        //GraphicsMain::GetInstance()->m_SoundPlayer->Mute(true);
+        GraphicsMain::GetInstance()->m_SoundPlayer->Mute(true);
 
         // デバッグ用
         /*{
@@ -58,7 +42,7 @@ namespace app
 
     void Demo_SESSIONS_2023::Update()
     {
-        if (GraphicsMain::GetInstance()->m_SecondsTime >= 90.0f)
+        if (GraphicsMain::GetInstance()->m_SecondsTime >= 30.0f)
         {
             GraphicsMain::GetInstance()->isRunning = false;
             return;
@@ -69,13 +53,7 @@ namespace app
     {
         if (IsRaymarching)
         {
-            m_TestMeshRenderer->Draw([&]() {
-                m_TestMeshRenderer->m_material->SetIntUniform("_IsTransform", m_IsTransform);
-                m_TestMeshRenderer->m_material->SetIntUniform("_UseBloom", ((PostProcess::GetInstance()->m_UseBloom)? 1 : 0));
-
-                m_TestMeshRenderer->m_material->SetIntUniform("_UseColor", 1);
-                m_TestMeshRenderer->m_material->SetVec4Uniform("_Color", glm::vec4(glm::vec3(2.0f, 0.0f, 0.0f), 1.0f));
-                });
+            
         }
         else
         {
@@ -85,14 +63,5 @@ namespace app
 
     void Demo_SESSIONS_2023::UpdateTimeline(float SceneTime)
     {
-        if (SceneTime < 54.0f)
-        {
-            PostProcess::GetInstance()->m_UseBloom = false;
-        }
-        else
-        {
-            PostProcess::GetInstance()->m_UseBloom = true;
-            m_IsTransform = 1;
-        }
     }
 }
