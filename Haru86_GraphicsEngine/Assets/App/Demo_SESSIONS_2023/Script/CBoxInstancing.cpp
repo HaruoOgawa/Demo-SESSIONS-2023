@@ -6,6 +6,7 @@ CBoxInstancing::CBoxInstancing():
 	m_InstanceNum(128*128),
 	m_SideCubeCount(128),
 	m_CubeMountain(nullptr),
+	m_GPGPU(nullptr),
 	m_cubeGroundBuffer(nullptr)
 {
 	Start();
@@ -27,6 +28,16 @@ void CBoxInstancing::Start() {
 		)
 	);
 	
+	m_GPGPU = std::make_shared<MeshRendererComponent>(
+		std::make_shared<TransformComponent>(),
+		PrimitiveType::POINT,
+		RenderingSurfaceType::RASTERIZER,
+		"","","","","",
+		std::string(
+			#include "Assets/App/Demo_SESSIONS_2023/Shader/InstancedBox.comp"
+		)
+	);
+
 	m_cubeGroundBuffer = std::make_shared<ComputeBuffer>(sizeof(SCubeFieldObj)*m_InstanceNum);
 	std::vector<SCubeFieldObj> init_CubeFieldObj;
 	for (int y = 0; y < m_SideCubeCount;y++) {

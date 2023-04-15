@@ -419,8 +419,15 @@ xcopy "$(ProjectDir)GraphicsEngine\Assets\Sound\stroke.wav" "$(OutDir)" /i /s /y
   <ItemGroup>
     <ClInclude Include="Assets\App\Demo_SESSIONS_2023\Demo_SESSIONS_2023.h" />
     <ClInclude Include="Assets\App\Demo_SESSIONS_2023\Script\CBoxInstancing.h" />
-    <ClInclude Include="GraphicsEngine\Graphics\CBloom.h" />
     <ClInclude Include="GraphicsEngine\Graphics\ComputeBuffer.h" />
+    <ClInclude Include="GraphicsEngine\Graphics\Shader\PostProcess_Frag.h" />
+    <ClInclude Include="GraphicsEngine\Graphics\Shader\PostProcess_FragComp.h" />
+    <ClInclude Include="GraphicsEngine\Graphics\Shader\StandardRenderBoard_Vert.h" />
+    <ClInclude Include="GraphicsEngine\Graphics\Shader\StandardRenderBoard_VertComp.h" />
+    <ClInclude Include="GraphicsEngine\Graphics\Shader\Standard_Frag.h" />
+    <ClInclude Include="GraphicsEngine\Graphics\Shader\Standard_FragComp.h" />
+    <ClInclude Include="GraphicsEngine\Graphics\Shader\Standard_Vert.h" />
+    <ClInclude Include="GraphicsEngine\Graphics\Shader\Standard_VertComp.h" />
     <ClInclude Include="GraphicsEngine\Library\GLEW\x64\include\GL\glew.h" />
     <ClInclude Include="GraphicsEngine\Library\GLEW\x64\include\GL\glxew.h" />
     <ClInclude Include="GraphicsEngine\Library\GLEW\x64\include\GL\wglew.h" />
@@ -434,8 +441,6 @@ xcopy "$(ProjectDir)GraphicsEngine\Assets\Sound\stroke.wav" "$(OutDir)" /i /s /y
     <ClInclude Include="GraphicsEngine\Library\GLFW\x86\include\GLFW\glfw3native.h" />
     <ClInclude Include="GraphicsEngine\Graphics\EGraphicsParam.h" />
     <ClInclude Include="GraphicsEngine\Graphics\ShaderLib.h" />
-    <ClInclude Include="GraphicsEngine\Math\mymath.h" />
-    <ClInclude Include="GraphicsEngine\Math\mymath_withGLM.h" />
     <ClInclude Include="GraphicsEngine\Message\Console.h" />
     <ClInclude Include="GraphicsEngine\Library\tinygltf\json.hpp" />
     <ClInclude Include="GraphicsEngine\Library\tinygltf\stb_image.h" />
@@ -446,7 +451,6 @@ xcopy "$(ProjectDir)GraphicsEngine\Assets\Sound\stroke.wav" "$(OutDir)" /i /s /y
     <ClInclude Include="GraphicsEngine\Graphics\Material.h" />
     <ClInclude Include="GraphicsEngine\Component\MeshRendererComponent.h" />
     <ClInclude Include="GraphicsEngine\Graphics\Primitive.h" />
-    <ClInclude Include="GraphicsEngine\Graphics\PolygonRaymarchingMixer.h" />
     <ClInclude Include="GraphicsEngine\Graphics\PostProcess.h" />
     <ClInclude Include="GraphicsEngine\Graphics\Texture.h" />
     <ClInclude Include="GraphicsEngine\Component\TransformComponent.h" />
@@ -456,7 +460,6 @@ xcopy "$(ProjectDir)GraphicsEngine\Assets\Sound\stroke.wav" "$(OutDir)" /i /s /y
   <ItemGroup>
     <ClCompile Include="Assets\App\Demo_SESSIONS_2023\Demo_SESSIONS_2023.cpp" />
     <ClCompile Include="Assets\App\Demo_SESSIONS_2023\Script\CBoxInstancing.cpp" />
-    <ClCompile Include="GraphicsEngine\Graphics\CBloom.cpp" />
     <ClCompile Include="GraphicsEngine\Graphics\ComputeBuffer.cpp" />
     <ClCompile Include="GraphicsEngine\GraphicsMain\GraphicsMain.cpp" />
     <ClCompile Include="GraphicsEngine\Graphics\GraphicsRenderer.cpp" />
@@ -467,11 +470,11 @@ xcopy "$(ProjectDir)GraphicsEngine\Assets\Sound\stroke.wav" "$(OutDir)" /i /s /y
     <ClCompile Include="GraphicsEngine\Graphics\Texture.cpp" />
     <ClCompile Include="GraphicsEngine\Component\TransformComponent.cpp" />
     <ClCompile Include="GraphicsEngine\Graphics\Mesh.cpp" />
-    <ClCompile Include="GraphicsEngine\Graphics\PolygonRaymarchingMixer.cpp" />
     <ClCompile Include="GraphicsEngine\Graphics\PostProcess.cpp" />
     <ClCompile Include="GraphicsEngine\Sound\SoundPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\App\Demo_SESSIONS_2023\Shader\InstancedBox.comp" />
     <None Include="Assets\App\Demo_SESSIONS_2023\Shader\InstancedBox.frag" />
     <None Include="Assets\App\Demo_SESSIONS_2023\Shader\InstancedBox.vert" />
     <None Include="Assets\App\Demo_SESSIONS_2023\Shader\ray01.frag" />
