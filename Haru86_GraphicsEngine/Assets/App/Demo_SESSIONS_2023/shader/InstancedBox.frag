@@ -57,16 +57,7 @@ float G_CookTorrance(vec3 L, vec3 V, vec3 H, vec3 N) {
 
 void main(){
 	vec3 col=vec3(0.0);
-
-	//diffuse
-	/*vec3 L=normalize(_lightDir);
-	float diff=max(0.0,dot(worldNormal,L));
-	col.rgb*=diff;
-	col+=0.01;*/
-    
-
     //PBR///////////////////
-     
     // ワールド空間上のライト位置と法線との内積を計算
     vec3 lightDirectionNormal = normalize(_lightDir);
     float NdotL = clamp(dot(worldNormal, lightDirectionNormal),0.0,1.0);
@@ -99,8 +90,6 @@ void main(){
     vec2 st=uv*2.0-1.0;
     col=col*step(abs(st.x),0.9)*step(abs(st.y),0.9);
 
-    //col=vec3(uv,0.0);
-	//gl_FragColor=vec4(col,0.5);
 	outColor=vec4(col,1.0);
 }
 )"

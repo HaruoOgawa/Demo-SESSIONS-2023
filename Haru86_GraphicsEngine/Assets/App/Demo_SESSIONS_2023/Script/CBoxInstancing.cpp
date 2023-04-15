@@ -1,6 +1,5 @@
 #include "CBoxInstancing.h"
 #include "GraphicsEngine/Graphics/ComputeBuffer.h"
-#include "GraphicsEngine/GraphicsMain/GraphicsMain.h"
 #include "GraphicsEngine/Component/MeshRendererComponent.h"
 
 CBoxInstancing::CBoxInstancing():
@@ -55,4 +54,8 @@ void CBoxInstancing::Draw() {
 		m_CubeMountain->m_material->SetFloatUniform("_Roughness", 0.5);
 		m_CubeMountain->m_material->SetFloatUniform("_FresnelReflectance", 1.0);
 	}, GL_TRIANGLES, true, m_InstanceNum);
+}
+
+void CBoxInstancing::UpdateTimeline(float SceneTime)
+{
 }

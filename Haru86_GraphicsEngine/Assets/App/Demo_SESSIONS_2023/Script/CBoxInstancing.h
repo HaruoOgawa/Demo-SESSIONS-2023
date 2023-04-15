@@ -34,6 +34,6 @@ public:
     void Start();
     void Update();
     void Draw();
-    void UpdateTimeline(float LocalTime, bool IsReverseTime);
+    void UpdateTimeline(float SceneTime);
 };
 
