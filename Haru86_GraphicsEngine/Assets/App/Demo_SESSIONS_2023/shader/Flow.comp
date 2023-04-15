@@ -1,0 +1,88 @@
+R"(
+#version 430
+
+// thread
+layout(local_size_x = 512, local_size_y = 1, local_size_z = 1) in;
+
+// Uniform 
+uniform float _time;
+uniform float _deltaTime;
+uniform vec4 _WallHalfSize;
+uniform int _FlowGridX;
+uniform int _FlowGridZ;
+
+uniform vec2 _NoiseScale;
+uniform vec2 _NoiseOctaves;
+uniform vec2 _NoiseOffset;
+uniform vec2 _AngleScale;
+uniform vec4 _Seed;
+
+struct SFlowData
+{
+	vec4 Pos;
+	vec4 Angle;
+};
+
+layout(std430, binding = 2) buffer FlowDataBuffer
+{
+	SFlowData flowData[];
+} rw_FlowDataBuffer;
+
+//
+#define pi 3.1415
+
+float Noise(vec2 st)
+{
+	return fract(sin(dot(st, vec2(12.9898, 78.233))) * 43758.5453123);
+}
+
+float PerlinNoise(vec2 st)
+{
+	vec2 i = floor(st);
+	vec2 f = fract(st);
+
+	float a = Noise(i);
+	float b = Noise(i + vec2(1.0, 0.0));
+	float c = Noise(i + vec2(0.0, 1.0));
+	float d = Noise(i + vec2(1.0, 1.0));
+
+	vec2 u = f * f * (3.0 - 2.0 * f);
+
+	return mix(a, b, u.x) +
+		(c - a) * u.y * (1.0 - u.x) +
+		(d - b) * u.x * u.y;
+}
+
+float FBM(vec2 st, float Octaves)
+{
+	float total = 0.0, freq = 1.0, amp = 1.0, val = 0.0;
+
+	for(float i = 0.0; i < Octaves; i++)
+	{
+		val += PerlinNoise(st * freq) * amp;
+		total += amp;
+		amp *= 0.5;
+		freq *= 2.0;
+	}
+
+	float result = val / total;
+
+	return result;
+}
+
+void main()
+{
+	uint DID = gl_GlobalInvocationID.x;
+	float fDID = float(DID);
+	vec2 DomainID = vec2(0.0);
+	DomainID.y = floor(fDID/float(_FlowGridX));
+	DomainID.x = fDID - DomainID.y * float(_FlowGridX);
+
+	float angle = pi * 2.0 * _AngleScale.y * (
+		FBM(_Seed.zw + DomainID / vec2(float(_FlowGridX), float(_FlowGridZ)) * _NoiseScale.x, _NoiseOctaves.x) + _NoiseOffset.x
+	);
+	
+	rw_FlowDataBuffer.flowData[DID].Angle.y = angle;
+}
+
+)"

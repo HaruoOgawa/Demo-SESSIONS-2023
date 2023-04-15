@@ -1,0 +1,112 @@
+R"(
+
+#version 430
+
+// thread
+layout(local_size_x = 1024, local_size_y = 1, local_size_z = 1) in;
+
+// Uniform 
+uniform float _time;
+uniform float _deltaTime;
+uniform int _SegmentNum;
+uniform float _MaxBoxHeight;
+
+//
+struct STrailData
+{
+	vec4 Pos;
+	vec4 Rotate;
+	vec4 Scale;
+	vec4 Color;
+	vec4 Velocity;
+	vec4 TargetPos;
+	vec4 Data;
+};
+
+layout(std430, binding = 0) buffer TrailDataBuffer
+{
+	STrailData trailData[];
+} rw_TrailDataBuffer;
+
+// 
+struct SSegmentData 
+{
+	vec4 Pos;
+	vec4 Rotate;
+	vec4 Scale;
+	vec4 Color;
+	int  TrailIndex;
+	int  SegmentIndex;
+	int  GridID4Box;
+	int  Padding1;
+};
+
+layout(std430, binding = 1) buffer SegmentDataBuffer
+{
+	SSegmentData segmentData[];
+} rw_SegmentDataBuffer;
+
+struct SBoxData
+{
+    vec4 Pos;
+    vec4 Rot;
+    vec4 Scl;
+    vec4 Pad;
+};
+
+layout(std430,binding=3) buffer destBoxDataBuffer
+{
+	SBoxData data[];
+} outBoxDataBuffer;
+
+void main()
+{
+	uint DID = gl_GlobalInvocationID.x;
+	int GridID = 0;
+
+	SSegmentData Data = rw_SegmentDataBuffer.segmentData[DID];
+
+	if(Data.SegmentIndex == 0 /*|| Data.Data.x == 1.0*/)
+	{
+		STrailData trailData = rw_TrailDataBuffer.trailData[Data.TrailIndex];
+
+		Data.Pos = trailData.Pos;
+		Data.Rotate = trailData.Rotate;
+		Data.Scale = trailData.Scale;
+		Data.Color = trailData.Color;
+		Data.GridID4Box = int(trailData.Data.y);
+
+		rw_SegmentDataBuffer.segmentData[DID] = Data;
+
+		GridID = Data.GridID4Box;
+	}
+	else
+	{
+		uint PrevIndex = DID - 1;
+		SSegmentData PrevData = rw_SegmentDataBuffer.segmentData[PrevIndex];
+
+		Data.Pos = PrevData.Pos;
+		Data.Rotate = PrevData.Rotate;
+		Data.Scale = PrevData.Scale;
+		Data.Color = PrevData.Color;
+		Data.GridID4Box = PrevData.GridID4Box;
+
+		rw_SegmentDataBuffer.segmentData[DID] = Data;
+
+		GridID = Data.GridID4Box;
+	}
+
+	SBoxData data = outBoxDataBuffer.data[GridID];
+	float BoxSY = data.Scl.y;
+	BoxSY += 1.0;
+
+	if(BoxSY <= _MaxBoxHeight)
+	{
+		data.Scl.y = BoxSY;
+		data.Pos.y = BoxSY * 0.5;
+	}
+
+	outBoxDataBuffer.data[GridID] = data;
+}
+
+)"

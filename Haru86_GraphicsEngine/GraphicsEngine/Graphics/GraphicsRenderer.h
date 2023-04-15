@@ -37,9 +37,6 @@ class GraphicsRenderer
 	unsigned int m_PolygonPostProcess_FrameBuffer;
 	unsigned int m_LatePostProcess_FrameBuffer;
 
-	//ポリゴンとレイマーチングのミックス
-	std::unique_ptr<class PolygonRaymarchingMixer> m_Mixer;
-
 	// 背景色
 	glm::vec4 m_BackgroudColor;
 public:
@@ -83,8 +80,6 @@ public:
 
 	// 背景色
 	void SetBackgroudColor(glm::vec4 BackgroudColor);
-
-	friend class PolygonRaymarchingMixer;
 private:
 
 protected:

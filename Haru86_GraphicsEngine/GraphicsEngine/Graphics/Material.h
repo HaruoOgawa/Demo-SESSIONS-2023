@@ -42,8 +42,6 @@ public:
 
     // Compute Shader Func
     void Dispatch(int xGroupNum, int yGroupNum, int zGroupNum);
-    void BindComputeBuffer(CorrectionType correctionType);
-    void DisBindComputeBuffer(CorrectionType correctionType);
     void SetBufferToCS(std::shared_ptr<class ComputeBuffer> buffer, int bufferindex);
 private :
     //Color Render Buffer
@@ -65,7 +63,5 @@ private :
     //
     GLuint computeShaderData;
     GLuint computeShaderDepthData;
-
-    std::vector<std::shared_ptr<ComputeBuffer>> m_buffers;
 };
 

@@ -8,7 +8,6 @@
 
 #include "../GraphicsMain/GraphicsMain.h"
 #include "Texture.h"
-#include "GraphicsEngine/Graphics/PolygonRaymarchingMixer.h"
 #include "GraphicsEngine/Graphics/PostProcess.h"
 #include "Assets/App/Demo_SESSIONS_2023/Demo_SESSIONS_2023.h"
 
@@ -245,9 +244,6 @@ bool GraphicsRenderer::Initialize(float width,float height) {
 	CreateFrameBuffer(static_cast<int>(GetScreenSize().x), static_cast<int>(GetScreenSize().y), m_PolygonPostProcess_FrameTexture, m_PolygonPostProcess_FrameBuffer, GL_RGBA16F, GL_RGBA, GL_FLOAT);
 	CreateFrameBuffer(static_cast<int>(GetScreenSize().x), static_cast<int>(GetScreenSize().y), m_LatePostProcess_FrameTexture, m_LatePostProcess_FrameBuffer, GL_RGBA16F, GL_RGBA, GL_FLOAT);
 
-	//
-	m_Mixer = std::make_unique<PolygonRaymarchingMixer>();
-
 	return true;
 }
 
@@ -358,51 +354,18 @@ void GraphicsRenderer::Draw(const std::shared_ptr<TransformComponent>& UsingCame
 	glBindFramebuffer(GL_FRAMEBUFFER, polygon_frameBuffer_MSAA);
 	GraphicsMain::GetInstance()->m_TargetFrameIndex = polygon_frameBuffer_MSAA;
 	glViewport(0, 0, static_cast<int>(GetScreenSize().x * frameResolusion), static_cast<int>(GetScreenSize().y * frameResolusion));
-
 	glClearColor(m_BackgroudColor.r, m_BackgroudColor.g, m_BackgroudColor.b, m_BackgroudColor.a);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glEnable(GL_DEPTH_TEST);
 
 	if (mgame->m_App) {
-		mgame->m_App->Draw(false);
+		mgame->m_App->Draw();
 	}
 
 	// MSAAカラーマップを通常のカラーマップにコピー
 	CopyFrameBuffer(polygon_frameBuffer_MSAA, polygon_frameBuffer, polygon_frameTexture->GetWidth(), polygon_frameTexture->GetHeight());
 
-	// レイマーチングをレンダリングするのはデフォルトバッファのみ(リフレクションプローブでは無視)
-	//レイマーチングオブジェクトのカラーマップをレンダリング///////////////
-	if (IsDrawRay) {
-		GraphicsMain::GetInstance()->renderingTarget = ERerderingTarget::COLOR;
-		glBindFramebuffer(GL_FRAMEBUFFER, raymarching_frameBuffer);
-		GraphicsMain::GetInstance()->m_TargetFrameIndex = raymarching_frameBuffer;
-		glViewport(0, 0, static_cast<int>(GetScreenSize().x * frameResolusion), static_cast<int>(GetScreenSize().y * frameResolusion));
-
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		//glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // デバッグでわざとこの色にしている
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glEnable(GL_DEPTH_TEST);
-
-		if (mgame->m_App) {
-			mgame->m_App->Draw(true);
-		}
-	}
-	
-	//ポリゴンオブジェクトとレイマーチングオブジェクトのカラーバッファをブレンドする
-	GraphicsMain::GetInstance()->renderingTarget = ERerderingTarget::COLOR;
-	glBindFramebuffer(GL_FRAMEBUFFER, p_r_BlendingBuffer);
-	GraphicsMain::GetInstance()->m_TargetFrameIndex = p_r_BlendingBuffer;
-	glViewport(0, 0, static_cast<int>(GetScreenSize().x * frameResolusion), static_cast<int>(GetScreenSize().y * frameResolusion));
-
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	glEnable(GL_DEPTH_TEST);
-
-	// ミックス
-	m_Mixer->Draw(false);
-
-	//ミキシングしたフレームバッファのポストプロセス////////////////////////////////////////
-	PostProcess::GetInstance()->DrawLatePostProcess(p_r_BlendingTexture, 0);
+	//ポストプロセス////////////////////////////////////////
+	PostProcess::GetInstance()->DrawPostProcess(polygon_frameTexture, 0);
 }
