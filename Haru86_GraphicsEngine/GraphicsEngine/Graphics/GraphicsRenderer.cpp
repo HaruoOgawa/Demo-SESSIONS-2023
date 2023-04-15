@@ -360,7 +360,7 @@ void GraphicsRenderer::Draw(const std::shared_ptr<TransformComponent>& UsingCame
 	glEnable(GL_DEPTH_TEST);
 
 	if (mgame->m_App) {
-		mgame->m_App->Draw(false);
+		mgame->m_App->Draw();
 	}
 
 	// MSAAカラーマップを通常のカラーマップにコピー

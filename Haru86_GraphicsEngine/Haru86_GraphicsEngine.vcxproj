@@ -419,6 +419,7 @@ xcopy "$(ProjectDir)GraphicsEngine\Assets\Sound\stroke.wav" "$(OutDir)" /i /s /y
   <ItemGroup>
     <ClInclude Include="Assets\App\Demo_SESSIONS_2023\Demo_SESSIONS_2023.h" />
     <ClInclude Include="Assets\App\Demo_SESSIONS_2023\Script\CBoxInstancing.h" />
+    <ClInclude Include="Assets\App\Demo_SESSIONS_2023\Script\CTrailObject.h" />
     <ClInclude Include="GraphicsEngine\Graphics\ComputeBuffer.h" />
     <ClInclude Include="GraphicsEngine\Graphics\Shader\PostProcess_Frag.h" />
     <ClInclude Include="GraphicsEngine\Graphics\Shader\PostProcess_FragComp.h" />
@@ -460,6 +461,7 @@ xcopy "$(ProjectDir)GraphicsEngine\Assets\Sound\stroke.wav" "$(OutDir)" /i /s /y
   <ItemGroup>
     <ClCompile Include="Assets\App\Demo_SESSIONS_2023\Demo_SESSIONS_2023.cpp" />
     <ClCompile Include="Assets\App\Demo_SESSIONS_2023\Script\CBoxInstancing.cpp" />
+    <ClCompile Include="Assets\App\Demo_SESSIONS_2023\Script\CTrailObject.cpp" />
     <ClCompile Include="GraphicsEngine\Graphics\ComputeBuffer.cpp" />
     <ClCompile Include="GraphicsEngine\GraphicsMain\GraphicsMain.cpp" />
     <ClCompile Include="GraphicsEngine\Graphics\GraphicsRenderer.cpp" />
@@ -474,10 +476,17 @@ xcopy "$(ProjectDir)GraphicsEngine\Assets\Sound\stroke.wav" "$(OutDir)" /i /s /y
     <ClCompile Include="GraphicsEngine\Sound\SoundPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\App\Demo_SESSIONS_2023\Shader\Flow.comp" />
+    <None Include="Assets\App\Demo_SESSIONS_2023\Shader\Flow.vert" />
     <None Include="Assets\App\Demo_SESSIONS_2023\Shader\InstancedBox.comp" />
     <None Include="Assets\App\Demo_SESSIONS_2023\Shader\InstancedBox.frag" />
     <None Include="Assets\App\Demo_SESSIONS_2023\Shader\InstancedBox.vert" />
     <None Include="Assets\App\Demo_SESSIONS_2023\Shader\ray01.frag" />
+    <None Include="Assets\App\Demo_SESSIONS_2023\Shader\Segment.comp" />
+    <None Include="Assets\App\Demo_SESSIONS_2023\Shader\Segment.geom" />
+    <None Include="Assets\App\Demo_SESSIONS_2023\Shader\Segment.vert" />
+    <None Include="Assets\App\Demo_SESSIONS_2023\Shader\Trail.comp" />
+    <None Include="Assets\App\Demo_SESSIONS_2023\Shader\Trail.vert" />
     <None Include="bin\libfreetype-6.dll" />
     <None Include="bin\SDL2_ttf.dll" />
     <None Include="bin\zlib1.dll" />

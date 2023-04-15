@@ -2,8 +2,8 @@
 #include "GraphicsEngine/GraphicsMain/GraphicsMain.h"
 #include "GraphicsEngine/Graphics/GraphicsRenderer.h"
 #include "GraphicsEngine/Sound/SoundPlayer.h"
-#include "GraphicsEngine/Component/MeshRendererComponent.h"
 #include "./Script/CBoxInstancing.h"
+#include "./Script/CTrailObject.h"
 #ifdef _DEBUG
 #include "GraphicsEngine/Message/Console.h"
 #endif // _DEBUG
@@ -14,22 +14,15 @@ namespace app
         m_SceneIndex(0),
         m_SceneStartTime(0.0f),
         m_SceneEndTime(0.0f),
-        m_CubeMountain(nullptr),
-        m_CBoxInstancing(nullptr)
+        m_BoxInstancing(nullptr),
+        m_TrailObject(nullptr)
     {
     }
 
     void Demo_SESSIONS_2023::Start()
     {
-        m_CubeMountain = std::make_shared<MeshRendererComponent>(
-            std::make_shared<TransformComponent>(),
-            PrimitiveType::CUBE,    
-            RenderingSurfaceType::RASTERIZER,
-            shaderlib::Standard_vert,
-            shaderlib::Standard_frag
-        );
-
-        m_CBoxInstancing = std::make_shared<CBoxInstancing>();
+        m_BoxInstancing = std::make_shared<CBoxInstancing>();
+        m_TrailObject = std::make_shared<CTrailObject>();
         
 #ifdef _DEBUG
         //GraphicsMain::GetInstance()->m_ShowDebugLog = true;
@@ -59,7 +52,8 @@ namespace app
         GraphicsMain::GetInstance()->m_MainCamera->m_position = glm::vec3(r * glm::cos(time), r * 0.5f, r * glm::sin(time));
 
         // Obj
-        m_CBoxInstancing->Update(time);
+        m_BoxInstancing->Update(time);
+        m_TrailObject->Update();
 
         //
         if (GraphicsMain::GetInstance()->m_SecondsTime >= 30.0f)
@@ -69,16 +63,14 @@ namespace app
         }
     }
 
-    void Demo_SESSIONS_2023::Draw(bool IsRaymarching)
+    void Demo_SESSIONS_2023::Draw()
     {
-        if (!IsRaymarching)
-        {
-            m_CBoxInstancing->Draw();
-        }
+        m_BoxInstancing->Draw();
+        m_TrailObject->Draw();
     }
 
     void Demo_SESSIONS_2023::UpdateTimeline(float SceneTime)
     {
-        m_CBoxInstancing->UpdateTimeline(SceneTime);
+        m_BoxInstancing->UpdateTimeline(SceneTime);
     }
 }

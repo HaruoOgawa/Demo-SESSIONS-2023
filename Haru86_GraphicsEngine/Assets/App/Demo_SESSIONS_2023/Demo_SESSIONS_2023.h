@@ -1,26 +1,26 @@
 #pragma once
 #include <memory>
 
-class MeshRendererComponent;
-class CBoxInstancing;
-
 namespace app
 {
+    class CBoxInstancing;
+    class CTrailObject;
+
     class Demo_SESSIONS_2023
     {
         unsigned int m_SceneIndex;
         float        m_SceneStartTime;
         float        m_SceneEndTime;
 
-        std::shared_ptr<MeshRendererComponent> m_CubeMountain;
-        std::shared_ptr<CBoxInstancing> m_CBoxInstancing;
+        std::shared_ptr<CBoxInstancing> m_BoxInstancing;
+        std::shared_ptr<CTrailObject> m_TrailObject;
     public:
         Demo_SESSIONS_2023();
         ~Demo_SESSIONS_2023() = default;
 
         void Start();
         void Update();
-        void Draw(bool IsRaymarching);
+        void Draw();
         void UpdateTimeline(float SceneTime);
 
         unsigned int GetSceneIndex()const { return m_SceneIndex; }
