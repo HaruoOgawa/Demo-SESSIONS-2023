@@ -51,12 +51,16 @@ namespace app
 		// FlowFields Param
 #ifdef _DEBUG
 		std::shared_ptr<MeshRendererComponent> m_FlowFieldsMesh;
+		std::shared_ptr<MeshRendererComponent> m_SegmentMesh;
+
+		// Segment Param
+		std::shared_ptr<ComputeBuffer> m_SegmentBuffer;
+		std::shared_ptr<Material> m_SegmentGPGPU;
 #endif // _DEBUG
 		std::shared_ptr<ComputeBuffer> m_FlowFieldsBuffer;
 		std::shared_ptr<Material> m_FlowFieldsGPGPU;
 
 		float m_FlowGridX;
-		float m_FlowGridY;
 		float m_FlowGridZ;
 		float m_FlowCellSize;
 
@@ -67,14 +71,8 @@ namespace app
 		glm::vec4 m_Seed;
 
 		// Trail Param
-		std::shared_ptr<MeshRendererComponent> m_TrailMesh;
 		std::shared_ptr<ComputeBuffer> m_TrailBuffer;
 		std::shared_ptr<Material> m_TrailGPGPU;
-
-		// Segment Param
-		std::shared_ptr<MeshRendererComponent> m_SegmentMesh;
-		std::shared_ptr<ComputeBuffer> m_SegmentBuffer;
-		std::shared_ptr<Material> m_SegmentGPGPU;
 
 		// Art Param
 		unsigned int m_DomainCount;

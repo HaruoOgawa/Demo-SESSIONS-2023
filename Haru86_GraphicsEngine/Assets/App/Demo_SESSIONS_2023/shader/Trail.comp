@@ -2,14 +2,13 @@ R"(
 #version 430
 
 // thread
-layout(local_size_x = 1024, local_size_y = 1, local_size_z = 1) in;
+layout(local_size_x = 512, local_size_y = 1, local_size_z = 1) in;
 
 // Uniform 
 uniform float _time;
 uniform float _deltaTime;
 uniform vec4 _WallHalfSize;
 uniform float _FlowGridX;
-uniform float _FlowGridY;
 uniform float _FlowGridZ;
 uniform float _StepLength;
 uniform float _StepSpeed;
@@ -87,14 +86,13 @@ void main()
 	{
 		vec3 GridPos = pos.xyz / _WallHalfSize.xyz;
 		GridPos = GridPos * 0.5 + 0.5;
-		GridPos *= vec3(_FlowGridX - 1.0f, _FlowGridY - 1.0f, _FlowGridZ - 1.0f);
-		int GridID = int(floor(GridPos.z) * (_FlowGridX * _FlowGridY) + floor(GridPos.y) * _FlowGridX + floor(GridPos.x));
+		GridPos *= vec3(_FlowGridX - 1.0f, 1.0, _FlowGridZ - 1.0f);
+		int GridID = int(floor(GridPos.z) * _FlowGridX + floor(GridPos.x));
 
 		SFlowData flowData = rw_FlowDataBuffer.flowData[GridID];
 
-		addv = vec4(0.0, 1.0, 0.0, 0.0);
-		addv.xy *= rot(flowData.Angle.z);
-		addv.yz *= rot(flowData.Angle.x);
+		addv = vec4(0.0, 0.0, 1.0, 0.0);
+		addv.xz *= rot(flowData.Angle.y);
 
 		trailData.TargetPos = pos + addv * _StepLength;
 		

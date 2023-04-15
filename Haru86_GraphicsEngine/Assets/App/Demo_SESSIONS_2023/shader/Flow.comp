@@ -2,14 +2,13 @@ R"(
 #version 430
 
 // thread
-layout(local_size_x = 8, local_size_y = 8, local_size_z = 8) in;
+layout(local_size_x = 512, local_size_y = 1, local_size_z = 1) in;
 
 // Uniform 
 uniform float _time;
 uniform float _deltaTime;
 uniform vec4 _WallHalfSize;
 uniform int _FlowGridX;
-uniform int _FlowGridY;
 uniform int _FlowGridZ;
 
 uniform vec2 _NoiseScale;
@@ -73,21 +72,17 @@ float FBM(vec2 st, float Octaves)
 
 void main()
 {
-	uvec3 DID = gl_GlobalInvocationID.xyz;
+	uint DID = gl_GlobalInvocationID.x;
+	float fDID = float(DID);
+	vec2 DomainID = vec2(0.0);
+	DomainID.y = floor(fDID/float(_FlowGridX));
+	DomainID.x = fDID - DomainID.y * float(_FlowGridX);
 
-	//float angle = pi * (float(DID.x) / float(_FlowGridX - 1));
-
-	float angleZ = pi * 2.0 * _AngleScale.x * (
-		FBM(_Seed.xy + vec2(float(DID.x), float(DID.y)) / vec2(float(_FlowGridX), float(_FlowGridY)) * _NoiseScale.x, _NoiseOctaves.x) + _NoiseOffset.x
+	float angle = pi * 2.0 * _AngleScale.y * (
+		FBM(_Seed.zw + DomainID / vec2(float(_FlowGridX), float(_FlowGridZ)) * _NoiseScale.x, _NoiseOctaves.x) + _NoiseOffset.x
 	);
 	
-	float angleX = pi * 2.0 * _AngleScale.y * (
-		FBM(_Seed.zw + vec2(float(DID.y), float(DID.z)) / vec2(float(_FlowGridY), float(_FlowGridZ)) * _NoiseScale.y, _NoiseOctaves.y) + _NoiseOffset.y
-	);
-
-	uint ID = DID.z * (_FlowGridX * _FlowGridY) + DID.y * _FlowGridX + DID.x;
-	rw_FlowDataBuffer.flowData[ID].Angle.z = angleZ;
-	rw_FlowDataBuffer.flowData[ID].Angle.x = angleX;
+	rw_FlowDataBuffer.flowData[DID].Angle.y = angle;
 }
 
 )"
