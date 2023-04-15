@@ -73,7 +73,7 @@ namespace app
     {
         m_BoxInstancing->Draw();
 #ifdef _DEBUG
-        //m_TrailObject->Draw();
+        m_TrailObject->Draw();
 #endif // _DEBUG
     }
 
