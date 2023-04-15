@@ -7,6 +7,7 @@ uniform mat4 VMatrix;
 uniform mat4 PMatrix;
 uniform float _time;
 uniform float _deltaTime;
+uniform float _MaxBoxHeight;
 
 layout(location=0)in vec3 vertex;
 layout(location=1)in vec3 normal;
@@ -59,11 +60,9 @@ void main(){
 
 	id=float(gl_InstanceID);
 
-	randColor=hsv2rgb2(vec3(
-		rand(vec2(float(gl_InstanceID),0.159)),
-        rand(vec2(float(gl_InstanceID),7.957)),
-        rand(vec2(float(gl_InstanceID),0.681))
-	), 0.6);
+	float rate = data.Scl.y/_MaxBoxHeight;
+	rate = mod(rate, 1.0);
+	randColor=hsv2rgb2(vec3(rate, 1.0, 1.0), 0.6);
 
 	uv=texcoord;
 }

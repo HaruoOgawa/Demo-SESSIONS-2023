@@ -10,6 +10,7 @@ uniform float _time;
 uniform float _deltaTime;
 uniform int _SegmentNum;
 uniform float _MaxBoxHeight;
+uniform float _AddedBoxHeight;
 
 //
 struct STrailData
@@ -98,7 +99,7 @@ void main()
 
 	SBoxData data = outBoxDataBuffer.data[GridID];
 	float BoxSY = data.Scl.y;
-	BoxSY += 1.0;
+	BoxSY += _AddedBoxHeight * (1.0 - float(Data.SegmentIndex) / float(_SegmentNum - 1));
 
 	if(BoxSY <= _MaxBoxHeight)
 	{
