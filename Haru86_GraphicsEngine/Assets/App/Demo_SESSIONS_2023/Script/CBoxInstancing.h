@@ -2,29 +2,25 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <glm/glm.hpp>
 
 class ComputeBuffer;
 class MeshRendererComponent;
 
-struct SCubeFieldObj
+struct SFieldData
 {
-public:
-    int xIndex;
-    int yIndex;
-    int instancedIndex;
-    SCubeFieldObj(int x, int y, int ii)
-        :
-        xIndex(x),
-        yIndex(y),
-        instancedIndex(ii)
-    {
-    }
+    float Pos[4];
+    float Rot[4];
+    float Scl[4];
+    float Pad[4];
 };
 
 class CBoxInstancing
 {
-    int m_InstanceNum;
-    int m_SideCubeCount;
+    int m_CubeNum;
+    int m_SideCubeNum;
+    float m_CubeWidth;
+    glm::ivec3 m_CubeThreads;
 
     std::shared_ptr<MeshRendererComponent> m_CubeMountain;
     std::shared_ptr<MeshRendererComponent> m_GPGPU;
@@ -33,8 +29,12 @@ public:
     CBoxInstancing();
     ~CBoxInstancing();
     void Start();
-    void Update();
+    void Update(float SceneTime);
     void Draw();
     void UpdateTimeline(float SceneTime);
+
+    float rand(glm::vec2 seeds) {
+        return glm::fract(glm::sin(glm::dot(seeds, glm::vec2(12.9898f, 78.233f))) * 43758.5453f);
+    }
 };
 

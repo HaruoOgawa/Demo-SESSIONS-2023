@@ -52,11 +52,16 @@ namespace app
     void Demo_SESSIONS_2023::Update()
     {
         // ライトポジション
-        GraphicsMain::GetInstance()->m_GroabalLightPosition->m_position = glm::vec3(1.0f, 1.0f, -1.0f);
+        GraphicsMain::GetInstance()->m_DirectionalLightDir = glm::normalize(glm::vec3(-2.0f, 1.0f, 1.0f));
 
-        float time = GraphicsMain::GetInstance()->m_SecondsTime, r = 10.0f;
-        GraphicsMain::GetInstance()->m_MainCamera->m_position = glm::vec3(r * glm::cos(time), r * 1.0f, r * glm::sin(time));
+        // Camera
+        float time = GraphicsMain::GetInstance()->m_SecondsTime, r = 50.0f;
+        GraphicsMain::GetInstance()->m_MainCamera->m_position = glm::vec3(r * glm::cos(time), r * 0.5f, r * glm::sin(time));
 
+        // Obj
+        m_CBoxInstancing->Update(time);
+
+        //
         if (GraphicsMain::GetInstance()->m_SecondsTime >= 30.0f)
         {
             GraphicsMain::GetInstance()->isRunning = false;

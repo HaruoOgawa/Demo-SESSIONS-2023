@@ -3,8 +3,10 @@
 #include "GraphicsEngine/Component/MeshRendererComponent.h"
 
 CBoxInstancing::CBoxInstancing():
-	m_InstanceNum(128*128),
-	m_SideCubeCount(128),
+	m_SideCubeNum(512),
+	m_CubeNum(512 * 512),
+	m_CubeWidth(1.0f),
+	m_CubeThreads(512, 1, 1),
 	m_CubeMountain(nullptr),
 	m_GPGPU(nullptr),
 	m_cubeGroundBuffer(nullptr)
@@ -38,33 +40,46 @@ void CBoxInstancing::Start() {
 		)
 	);
 
-	m_cubeGroundBuffer = std::make_shared<ComputeBuffer>(sizeof(SCubeFieldObj)*m_InstanceNum);
-	std::vector<SCubeFieldObj> init_CubeFieldObj;
-	for (int y = 0; y < m_SideCubeCount;y++) {
-		for (int x = 0; x < m_SideCubeCount; x++) {
-			init_CubeFieldObj.push_back(SCubeFieldObj(x, y, x + y * m_SideCubeCount));
+	m_cubeGroundBuffer = std::make_shared<ComputeBuffer>(sizeof(SFieldData) * m_CubeNum);
+	
+	std::vector<SFieldData> init_FieldData;
+	for (int y = 0; y < m_SideCubeNum; y++) {
+		for (int x = 0; x < m_SideCubeNum; x++) {
+			glm::vec3 Pos = glm::vec3(
+				float(x - m_SideCubeNum * 0.5f) * m_CubeWidth,
+				0.0f,
+				float(y - m_SideCubeNum * 0.5f) * m_CubeWidth
+			);
+			SFieldData Data = {
+				{Pos.x,Pos.y,Pos.z,1.0f},
+				{0.0f,0.0f,0.0f,0.0f},
+				{m_CubeWidth,m_CubeWidth,m_CubeWidth,rand(100.0f * glm::vec2(float(x), float(y)))},
+				{0.0f,0.0f,0.0f,0.0f}
+			};
+			init_FieldData.push_back(Data);
 		}
 	}
 
-	m_cubeGroundBuffer->SetData<std::vector<SCubeFieldObj>>(init_CubeFieldObj);
+	m_cubeGroundBuffer->SetData<std::vector<SFieldData>>(init_FieldData);
 
-	//set buffer to material
+	//set buffer
+	m_GPGPU->m_material->SetBufferToCS(m_cubeGroundBuffer, 0);
 	m_CubeMountain->m_material->SetBufferToMat(m_cubeGroundBuffer, 0);
 }
 
-void CBoxInstancing::Update() {
-
+void CBoxInstancing::Update(float SceneTime) {
+	//
+	auto& mat = m_GPGPU->m_material;
+	mat->SetActive();
+	mat->SetFloatUniform("_time", SceneTime);
+	mat->Dispatch(m_CubeNum / m_CubeThreads.x, 1, 1);
 }
 
 void CBoxInstancing::Draw() {
 	m_CubeMountain->Draw([&]() {
-		m_CubeMountain->m_material->SetIntUniform("_instancedCound", m_InstanceNum);
-		m_CubeMountain->m_material->SetIntUniform("_sideCubeCount", m_SideCubeCount);
-		m_CubeMountain->m_material->SetFloatUniform("_cubeWidth", 1.0);
-		m_CubeMountain->m_material->SetVec3Uniform("_lightDir", glm::vec3(-2.0, 1.0, 1.0));
 		m_CubeMountain->m_material->SetFloatUniform("_Roughness", 0.5);
 		m_CubeMountain->m_material->SetFloatUniform("_FresnelReflectance", 1.0);
-	}, GL_TRIANGLES, true, m_InstanceNum);
+	}, GL_TRIANGLES, true, m_CubeNum);
 }
 
 void CBoxInstancing::UpdateTimeline(float SceneTime)

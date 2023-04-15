@@ -2,7 +2,7 @@ R"(
 #version 430
 
 uniform vec3 _WorldCameraPos;
-uniform vec3 _lightDir;
+uniform vec3 _LightDir;
 uniform float _Roughness;
 uniform float _FresnelReflectance;
 
@@ -59,7 +59,7 @@ void main(){
 	vec3 col=vec3(0.0);
     //PBR///////////////////
     // ワールド空間上のライト位置と法線との内積を計算
-    vec3 lightDirectionNormal = normalize(_lightDir);
+    vec3 lightDirectionNormal = normalize(_LightDir);
     float NdotL = clamp(dot(worldNormal, lightDirectionNormal),0.0,1.0);
 
     // ワールド空間上の視点（カメラ）位置と法線との内積を計算
