@@ -56,7 +56,14 @@ float G_CookTorrance(vec3 L, vec3 V, vec3 H, vec3 N) {
 }
 
 void main(){
-	vec3 col=vec3(0.0);
+	
+
+    //diffuse
+	vec3 L=normalize(_LightDir);
+	float diff=max(0.0,dot(worldNormal,L));
+	vec3 diffuseColor = diff * randColor;;
+	//diffuseColor+=0.01;
+
     //PBR///////////////////
     // ワールド空間上のライト位置と法線との内積を計算
     vec3 lightDirectionNormal = normalize(_LightDir);
@@ -81,14 +88,12 @@ void main(){
     // スペキュラおよびディフューズを計算
     float specularReflection = (D * F * G) / (4.0 * NdotV * NdotL + 0.000001);
   
-    vec3 pbrCol=vec3(1.0);
+    vec3 pbrCol = vec3(1.0) * specularReflection;
 
-    col=col+pbrCol*specularReflection;
+    vec3 col = diffuseColor + pbrCol;
     
-    col+=randColor;
-
-    vec2 st=uv*2.0-1.0;
-    col=col*step(abs(st.x),0.9)*step(abs(st.y),0.9);
+    //vec2 st=uv*2.0-1.0;
+    //col=col*step(abs(st.x),0.9)*step(abs(st.y),0.9);
 
 	outColor=vec4(col,1.0);
 }

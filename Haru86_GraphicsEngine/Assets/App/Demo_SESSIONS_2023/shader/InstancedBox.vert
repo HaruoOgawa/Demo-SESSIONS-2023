@@ -35,6 +35,11 @@ float rand(vec2 seeds){
   return fract(sin(dot(seeds, vec2(12.9898,78.233))) * 43758.5453);
 }
 
+vec3 hsv2rgb2(vec3 c, float k) {
+    return smoothstep(0. + k, 1. - k,
+        .5 + .5 * cos((vec3(c.x, c.x, c.x) + vec3(3., 2., 1.) / 3.) * radians(360.)));
+}
+
 void main(){
 	SFieldData data = outFieldDataBuffer.data[gl_InstanceID];
 
@@ -54,11 +59,11 @@ void main(){
 
 	id=float(gl_InstanceID);
 
-	randColor=vec3(
+	randColor=hsv2rgb2(vec3(
 		rand(vec2(float(gl_InstanceID),0.159)),
         rand(vec2(float(gl_InstanceID),7.957)),
         rand(vec2(float(gl_InstanceID),0.681))
-	);
+	), 0.6);
 
 	uv=texcoord;
 }
