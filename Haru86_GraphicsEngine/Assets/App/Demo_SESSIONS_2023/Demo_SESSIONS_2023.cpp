@@ -34,7 +34,7 @@ namespace app
         //GraphicsMain::GetInstance()->m_SecondsTimeOffset = 0.0f;// シーンを飛ばすためのオフセット
 
         // 音楽のミュート
-        GraphicsMain::GetInstance()->m_SoundPlayer->Mute(true);
+        //GraphicsMain::GetInstance()->m_SoundPlayer->Mute(true);
 
         // デバッグ用
         /*{
@@ -51,9 +51,9 @@ namespace app
         GraphicsMain::GetInstance()->m_DirectionalLightDir = glm::normalize(glm::vec3(-2.0f, 1.0f, 1.0f));
 
         // Camera
-        float time = GraphicsMain::GetInstance()->m_SecondsTime, r = 60.0f;
-        time = 0.0f;
-        GraphicsMain::GetInstance()->m_MainCamera->m_position = glm::vec3(r * glm::cos(time), r * 0.5f, r * glm::sin(time));
+        float time = GraphicsMain::GetInstance()->m_SecondsTime * 0.1f, r = 60.0f;
+        //time = 0.0f;
+        GraphicsMain::GetInstance()->m_MainCamera->m_position = glm::vec3(r * glm::cos(time), r * 1.5f, r * glm::sin(time));
 
         // Obj
         m_BoxInstancing->Update(time);
@@ -73,7 +73,7 @@ namespace app
     {
         m_BoxInstancing->Draw();
 #ifdef _DEBUG
-        m_TrailObject->Draw();
+        //m_TrailObject->Draw();
 #endif // _DEBUG
     }
 

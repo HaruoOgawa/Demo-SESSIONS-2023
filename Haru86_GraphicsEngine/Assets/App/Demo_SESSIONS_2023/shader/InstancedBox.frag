@@ -92,8 +92,8 @@ void main(){
 
     vec3 col = diffuseColor + pbrCol;
     
-    //vec2 st=uv*2.0-1.0;
-    //col=col*step(abs(st.x),0.9)*step(abs(st.y),0.9);
+    vec2 st=uv*2.0-1.0;
+    col=col*step(abs(st.x),0.9)*step(abs(st.y),0.9);
 
 	outColor=vec4(col,1.0);
 }

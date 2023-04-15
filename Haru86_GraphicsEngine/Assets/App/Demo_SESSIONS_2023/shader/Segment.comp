@@ -99,7 +99,7 @@ void main()
 
 	SBoxData data = outBoxDataBuffer.data[GridID];
 	float BoxSY = data.Scl.y;
-	BoxSY += _AddedBoxHeight * (1.0 - float(Data.SegmentIndex) / float(_SegmentNum - 1));
+	BoxSY += _AddedBoxHeight * min(1.0, exp(-0.01*length(Data.Pos)));
 
 	if(BoxSY <= _MaxBoxHeight)
 	{

@@ -11,9 +11,9 @@ namespace app
 		m_CubeThreads(512, 1, 1),
 
 		m_InitSY(1.0f),
-		m_MaxBoxHeight(50.0f),
-		m_AddedBoxHeight(1.0f),
-		m_Atten(0.5f),
+		m_MaxBoxHeight(80.0f),
+		m_AddedBoxHeight(0.05f),
+		m_Atten(0.95f),
 		
 		m_CubeMountain(nullptr),
 		m_GPGPU(nullptr),

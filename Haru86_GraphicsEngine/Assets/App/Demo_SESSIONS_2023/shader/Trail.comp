@@ -112,7 +112,7 @@ void main()
 	pos.xyz += v.xyz * _StepSpeed;
 
 	// 壁に当たっているのなら範囲内のランダムな位置に再配置する
-	if(IsWall)
+	if(IsWall || length(pos.xyz) <= 10.0)
 	{
 		//float Shrink = 0.75;
 		float Shrink = 1.0;

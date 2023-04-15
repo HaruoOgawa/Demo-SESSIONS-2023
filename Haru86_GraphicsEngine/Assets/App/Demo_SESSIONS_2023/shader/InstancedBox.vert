@@ -61,8 +61,8 @@ void main(){
 	id=float(gl_InstanceID);
 
 	float rate = data.Scl.y/_MaxBoxHeight;
-	rate = mod(rate, 1.0);
-	randColor=hsv2rgb2(vec3(rate, 1.0, 1.0), 0.6);
+	rate = mod(rate + 0.125, 1.0);
+	randColor=hsv2rgb2(vec3(rate, 1.0, 1.0), 1.5);
 
 	uv=texcoord;
 }
