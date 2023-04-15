@@ -418,6 +418,7 @@ xcopy "$(ProjectDir)GraphicsEngine\Assets\Sound\stroke.wav" "$(OutDir)" /i /s /y
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Assets\App\Demo_SESSIONS_2023\Demo_SESSIONS_2023.h" />
+    <ClInclude Include="Assets\App\Demo_SESSIONS_2023\Script\CBoxInstancing.h" />
     <ClInclude Include="Assets\App\Demo_SESSIONS_2023\Script\Forest\Flower.h" />
     <ClInclude Include="Assets\App\Demo_SESSIONS_2023\Script\Forest\FlowerModel.h" />
     <ClInclude Include="Assets\App\Demo_SESSIONS_2023\Script\Forest\Forest.h" />
@@ -460,6 +461,7 @@ xcopy "$(ProjectDir)GraphicsEngine\Assets\Sound\stroke.wav" "$(OutDir)" /i /s /y
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\App\Demo_SESSIONS_2023\Demo_SESSIONS_2023.cpp" />
+    <ClCompile Include="Assets\App\Demo_SESSIONS_2023\Script\CBoxInstancing.cpp" />
     <ClCompile Include="Assets\App\Demo_SESSIONS_2023\Script\Forest\Flower.cpp" />
     <ClCompile Include="Assets\App\Demo_SESSIONS_2023\Script\Forest\FlowerModel.cpp" />
     <ClCompile Include="Assets\App\Demo_SESSIONS_2023\Script\Forest\Forest.cpp" />

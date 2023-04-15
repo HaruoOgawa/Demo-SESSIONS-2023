@@ -2,6 +2,7 @@
 #include <memory>
 
 class MeshRendererComponent;
+class CBoxInstancing;
 
 namespace myapp {
     class Forest;
@@ -15,7 +16,10 @@ namespace app
         float        m_SceneStartTime;
         float        m_SceneEndTime;
 
-        std::shared_ptr<myapp::Forest> m_Forest;
+        //std::shared_ptr<myapp::Forest> m_Forest;
+
+        std::shared_ptr<MeshRendererComponent> m_CubeMountain;
+        std::shared_ptr<CBoxInstancing> m_CBoxInstancing;
     public:
         Demo_SESSIONS_2023();
         ~Demo_SESSIONS_2023() = default;
