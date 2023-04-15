@@ -12,7 +12,7 @@ layout(location=0)in vec3 vertex;
 layout(location=1)in vec3 normal;
 layout(location=2)in vec2 texcoord;
 
-struct SFieldData
+struct SBoxData
 {
     vec4 Pos;
     vec4 Rot;
@@ -20,10 +20,10 @@ struct SFieldData
     vec4 Pad;
 };
 
-layout(std430,binding=3) buffer destFieldDataBuffer
+layout(std430,binding=3) buffer destBoxDataBuffer
 {
-	SFieldData data[];
-} outFieldDataBuffer;
+	SBoxData data[];
+} outBoxDataBuffer;
 
 out vec3 worldPosition;
 out vec3 worldNormal;
@@ -41,7 +41,7 @@ vec3 hsv2rgb2(vec3 c, float k) {
 }
 
 void main(){
-	SFieldData data = outFieldDataBuffer.data[gl_InstanceID];
+	SBoxData data = outBoxDataBuffer.data[gl_InstanceID];
 
 	mat4x4 ModelMatrix= mat4x4(
 		vec4(data.Scl.x,0.0,0.0,0.0),

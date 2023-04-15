@@ -97,6 +97,8 @@ void main()
 		trailData.TargetPos = pos + addv * _StepLength;
 		
 		v.xyz = addv.xyz * _StepLength;
+
+		Data.y = float(GridID);
 	}
 
 	// 速度ベクトルを更新

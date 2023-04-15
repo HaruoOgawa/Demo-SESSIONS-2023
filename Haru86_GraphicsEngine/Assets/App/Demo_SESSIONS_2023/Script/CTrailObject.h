@@ -23,7 +23,7 @@ namespace app
 		float m_Color[4];
 		float m_Velocity[4];
 		float m_TargetPos[4];
-		float m_Data[4]; // IsRelocation, none, none, none
+		float m_Data[4]; // IsRelocation, GridID4Box, none, none
 	};
 
 	// 今回はセグメントの順番は固定で単純にひとつ前のセグメントの位置を参照する形にしてみる
@@ -37,7 +37,7 @@ namespace app
 		float m_Color[4];
 		int   m_TrailIndex;
 		int   m_SegmentIndex;
-		int   m_Padding0;
+		int   m_GridID4Box;
 		int   m_Padding1;
 	};
 
@@ -52,10 +52,6 @@ namespace app
 #ifdef _DEBUG
 		std::shared_ptr<MeshRendererComponent> m_FlowFieldsMesh;
 		std::shared_ptr<MeshRendererComponent> m_SegmentMesh;
-
-		// Segment Param
-		std::shared_ptr<ComputeBuffer> m_SegmentBuffer;
-		std::shared_ptr<Material> m_SegmentGPGPU;
 #endif // _DEBUG
 		std::shared_ptr<ComputeBuffer> m_FlowFieldsBuffer;
 		std::shared_ptr<Material> m_FlowFieldsGPGPU;
@@ -73,6 +69,11 @@ namespace app
 		// Trail Param
 		std::shared_ptr<ComputeBuffer> m_TrailBuffer;
 		std::shared_ptr<Material> m_TrailGPGPU;
+
+		// Segment Param
+		std::shared_ptr<ComputeBuffer> m_SegmentBuffer;
+		std::shared_ptr<Material> m_SegmentGPGPU;
+		float m_MaxBoxHeight;
 
 		// Art Param
 		unsigned int m_DomainCount;
@@ -97,5 +98,6 @@ namespace app
 		void Draw();
 
 		const glm::vec4& GetWallHalfSize() const { return m_WallHalfSize; }
+		void LinkBoxBufferToSegmentCS(const std::shared_ptr<ComputeBuffer>& CubeGroundBuffer);
 	};
 }

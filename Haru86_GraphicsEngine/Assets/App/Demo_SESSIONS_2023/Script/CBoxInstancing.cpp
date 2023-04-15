@@ -9,6 +9,7 @@ namespace app
 		m_CubeNum(512 * 512),
 		m_CubeWidth(1.0f),
 		m_CubeThreads(512, 1, 1),
+		m_InitSY(1.0f),
 		m_CubeMountain(nullptr),
 		m_GPGPU(nullptr),
 		m_cubeGroundBuffer(nullptr)
@@ -42,9 +43,9 @@ namespace app
 			)
 			);
 
-		m_cubeGroundBuffer = std::make_shared<ComputeBuffer>(sizeof(SFieldData) * m_CubeNum);
+		m_cubeGroundBuffer = std::make_shared<ComputeBuffer>(sizeof(SBoxData) * m_CubeNum);
 
-		std::vector<SFieldData> init_FieldData;
+		std::vector<SBoxData> init_BoxData;
 		for (int y = 0; y < m_SideCubeNum; y++) {
 			for (int x = 0; x < m_SideCubeNum; x++) {
 				glm::vec3 Pos = glm::vec3(
@@ -52,17 +53,17 @@ namespace app
 					0.0f,
 					float(y - m_SideCubeNum * 0.5f) * m_CubeWidth
 				);
-				SFieldData Data = {
+				SBoxData Data = {
 					{Pos.x,Pos.y,Pos.z,1.0f},
 					{0.0f,0.0f,0.0f,0.0f},
 					{m_CubeWidth,m_CubeWidth,m_CubeWidth,rand(100.0f * glm::vec2(float(x), float(y)))},
 					{0.0f,0.0f,0.0f,0.0f}
 				};
-				init_FieldData.push_back(Data);
+				init_BoxData.push_back(Data);
 			}
 		}
 
-		m_cubeGroundBuffer->SetData<std::vector<SFieldData>>(init_FieldData);
+		m_cubeGroundBuffer->SetData<std::vector<SBoxData>>(init_BoxData);
 
 		//set buffer
 		m_GPGPU->m_material->SetBufferToCS(m_cubeGroundBuffer, 3);
@@ -74,6 +75,7 @@ namespace app
 		auto& mat = m_GPGPU->m_material;
 		mat->SetActive();
 		mat->SetFloatUniform("_time", SceneTime);
+		mat->SetFloatUniform("_InitSY", m_InitSY);
 		mat->Dispatch(m_CubeNum / m_CubeThreads.x, 1, 1);
 	}
 

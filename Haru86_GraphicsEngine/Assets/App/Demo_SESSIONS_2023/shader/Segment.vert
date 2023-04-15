@@ -38,7 +38,7 @@ struct SSegmentData
 	vec4 Color;
 	int  TrailIndex;
 	int  SegmentIndex;
-	int  Padding0;
+	int  GridID4Box;
 	int  Padding1;
 };
 

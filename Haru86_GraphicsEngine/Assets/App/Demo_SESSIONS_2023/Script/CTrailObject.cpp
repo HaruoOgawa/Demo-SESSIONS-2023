@@ -8,8 +8,6 @@ namespace app
 #ifdef _DEBUG
 		m_FlowFieldsMesh(nullptr),
 		m_SegmentMesh(nullptr),
-		m_SegmentBuffer(nullptr),
-		m_SegmentGPGPU(nullptr),
 #endif // _DEBUG
 		m_FlowFieldsBuffer(nullptr),
 		m_FlowFieldsGPGPU(nullptr),
@@ -17,12 +15,15 @@ namespace app
 		m_TrailBuffer(nullptr),
 		m_TrailGPGPU(nullptr),
 
-		m_ThreadNum(1024, 1, 1),
-		m_FlowThreads(512, 1, 1),
-		m_WallHalfSize(glm::vec4(200.0f, 1.0f, 200.0f, 1.0f)),
+		m_SegmentBuffer(nullptr),
+		m_SegmentGPGPU(nullptr),
 
-		m_FlowGridX(128.0f),
-		m_FlowGridZ(128.0f),
+		m_ThreadNum(512, 1, 1),
+		m_FlowThreads(512, 1, 1),
+		m_WallHalfSize(glm::vec4(512, 1.0f, 512, 1.0f)),
+
+		m_FlowGridX(512.0f),
+		m_FlowGridZ(512.0f),
 		m_FlowCellSize(1.0f),
 		m_NoiseScale(glm::vec2(1.0f, 1.0f)),
 		m_NoiseOctaves(glm::vec2(2.0f, 2.0f)),
@@ -36,7 +37,9 @@ namespace app
 		m_StepLength(1.0f),
 		m_StepSpeed(1.0f),
 		m_CurveAlpha(1.0f),
-		m_CurveTickness(0.25f)
+		m_CurveTickness(0.25f),
+
+		m_MaxBoxHeight(10.0f)
 	{
 		Init();
 	}
@@ -64,6 +67,8 @@ namespace app
 				shaderlib::Standard_frag
 				);
 
+		m_FlowFieldsMesh->useZTest = false;
+
 		m_SegmentMesh = std::make_shared<MeshRendererComponent>(
 			std::make_shared<TransformComponent>(),
 			PrimitiveType::POINT,
@@ -77,18 +82,9 @@ namespace app
 					})
 					);
 
+		m_SegmentMesh->useZTest = false;
 		m_SegmentMesh->useAlphaTest = false;
 
-		// Segment
-		m_SegmentGPGPU = std::make_shared<Material>(
-			RenderingSurfaceType::RASTERIZER,
-			"", "", "", "", "",
-			std::string({
-				#include "../shader/Segment.comp"	
-				})
-		);
-
-		m_SegmentBuffer = std::make_shared<ComputeBuffer>(m_DomainCount * m_TrailNumPerDomain * m_TrailSegmentNum * sizeof(SSegmentData));
 #endif // _DEBUG
 
 		m_FlowFieldsGPGPU = std::make_shared<Material>(
@@ -108,10 +104,20 @@ namespace app
 			})
 		);
 
+		// Segment
+		m_SegmentGPGPU = std::make_shared<Material>(
+			RenderingSurfaceType::RASTERIZER,
+			"", "", "", "", "",
+			std::string({
+				#include "../shader/Segment.comp"	
+				})
+				);
+
 		// Buffer
 		m_FlowFieldsBuffer = std::make_shared<ComputeBuffer>(m_FlowGridX * m_FlowGridZ * sizeof(SFlowData));
 		m_TrailBuffer = std::make_shared<ComputeBuffer>(m_DomainCount * m_TrailNumPerDomain * sizeof(STrailData));
-		
+		m_SegmentBuffer = std::make_shared<ComputeBuffer>(m_DomainCount * m_TrailNumPerDomain * m_TrailSegmentNum * sizeof(SSegmentData));
+
 		InitBuffer();
 		LinkBuffer();
 	}
@@ -177,7 +183,6 @@ namespace app
 		m_TrailBuffer->SetData<std::vector<STrailData>>(InitTrailDataList);
 
 		// Segment ////////////////////////////////////////////////
-#ifdef _DEBUG
 		std::vector<SSegmentData> InitSegmentData;
 
 		for (int d = 0; d < m_DomainCount; d++)
@@ -207,8 +212,6 @@ namespace app
 		}
 
 		m_SegmentBuffer->SetData<std::vector<SSegmentData>>(InitSegmentData);
-#endif // _DEBUG
-
 	}
 	
 	void CTrailObject::LinkBuffer()
@@ -217,16 +220,21 @@ namespace app
 #ifdef _DEBUG
 		m_FlowFieldsMesh->m_material->SetBufferToMat(m_FlowFieldsBuffer, 2);
 		m_SegmentMesh->m_material->SetBufferToMat(m_SegmentBuffer, 1);
-
-		// Segment
-		m_SegmentGPGPU->SetBufferToCS(m_TrailBuffer, 0);
-		m_SegmentGPGPU->SetBufferToCS(m_SegmentBuffer, 1);
 #endif // _DEBUG
 		m_FlowFieldsGPGPU->SetBufferToCS(m_FlowFieldsBuffer, 2);
 
 		// Trail
 		m_TrailGPGPU->SetBufferToCS(m_TrailBuffer, 0);
 		m_TrailGPGPU->SetBufferToCS(m_FlowFieldsBuffer, 2);
+
+		// Segment
+		m_SegmentGPGPU->SetBufferToCS(m_TrailBuffer, 0);
+		m_SegmentGPGPU->SetBufferToCS(m_SegmentBuffer, 1);
+	}
+
+	void CTrailObject::LinkBoxBufferToSegmentCS(const std::shared_ptr<ComputeBuffer>& CubeGroundBuffer)
+	{
+		m_SegmentGPGPU->SetBufferToCS(CubeGroundBuffer, 3);
 	}
 
 	void CTrailObject::Update()
@@ -263,15 +271,13 @@ namespace app
 		m_TrailGPGPU->SetFloatUniform("_StepSpeed", m_StepSpeed);
 		m_TrailGPGPU->Dispatch(m_DomainCount * m_TrailNumPerDomain / m_ThreadNum.x, 1, 1);
 		
-#ifdef _DEBUG
 		// Segment
 		m_SegmentGPGPU->SetActive();
 		m_SegmentGPGPU->SetFloatUniform("_time", t);
 		m_SegmentGPGPU->SetFloatUniform("_deltaTime", GraphicsMain::GetInstance()->m_DeltaTime);
 		m_SegmentGPGPU->SetIntUniform("_SegmentNum", m_TrailSegmentNum);
+		m_SegmentGPGPU->SetFloatUniform("_MaxBoxHeight", m_MaxBoxHeight);
 		m_SegmentGPGPU->Dispatch(m_DomainCount * m_TrailNumPerDomain * m_TrailSegmentNum / m_ThreadNum.x, 1, 1);
-#endif // _DEBUG
-
 	}
 	void CTrailObject::Draw()
 	{

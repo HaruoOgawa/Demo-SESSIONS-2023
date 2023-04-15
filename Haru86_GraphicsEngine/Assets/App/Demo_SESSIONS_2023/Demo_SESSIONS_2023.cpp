@@ -21,8 +21,11 @@ namespace app
 
     void Demo_SESSIONS_2023::Start()
     {
-        //m_BoxInstancing = std::make_shared<CBoxInstancing>();
+        m_BoxInstancing = std::make_shared<CBoxInstancing>();
         m_TrailObject = std::make_shared<CTrailObject>();
+
+        // BoxのバッファをTrailObjectのCSと結びつける
+        m_TrailObject->LinkBoxBufferToSegmentCS(m_BoxInstancing->GetCubeGroundBuffer());
         
 #ifdef _DEBUG
         //GraphicsMain::GetInstance()->m_ShowDebugLog = true;
@@ -52,7 +55,7 @@ namespace app
         GraphicsMain::GetInstance()->m_MainCamera->m_position = glm::vec3(r * glm::cos(time), r * 0.5f, r * glm::sin(time));
 
         // Obj
-        //m_BoxInstancing->Update(time);
+        m_BoxInstancing->Update(time);
         m_TrailObject->Update();
 
         //
@@ -65,7 +68,7 @@ namespace app
 
     void Demo_SESSIONS_2023::Draw()
     {
-        //m_BoxInstancing->Draw();
+        m_BoxInstancing->Draw();
         m_TrailObject->Draw();
     }
 

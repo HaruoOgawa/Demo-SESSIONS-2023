@@ -9,7 +9,7 @@ class MeshRendererComponent;
 
 namespace app
 {
-    struct SFieldData
+    struct SBoxData
     {
         float Pos[4];
         float Rot[4];
@@ -22,6 +22,7 @@ namespace app
         int m_CubeNum;
         int m_SideCubeNum;
         float m_CubeWidth;
+        float m_InitSY;
         glm::ivec3 m_CubeThreads;
 
         std::shared_ptr<MeshRendererComponent> m_CubeMountain;
@@ -34,6 +35,8 @@ namespace app
         void Update(float SceneTime);
         void Draw();
         void UpdateTimeline(float SceneTime);
+
+        std::shared_ptr<ComputeBuffer> GetCubeGroundBuffer() { return m_cubeGroundBuffer; }
 
         float rand(glm::vec2 seeds) {
             return glm::fract(glm::sin(glm::dot(seeds, glm::vec2(12.9898f, 78.233f))) * 43758.5453f);
