@@ -4,8 +4,8 @@
 #include "GraphicsEngine/Component/MeshRendererComponent.h"
 
 CBoxInstancing::CBoxInstancing():
-	m_InstanceNum(124*124),
-	m_SideCubeCount(124),
+	m_InstanceNum(128*128),
+	m_SideCubeCount(128),
 	m_CubeMountain(nullptr),
 	m_cubeGroundBuffer(nullptr)
 {
@@ -49,7 +49,7 @@ void CBoxInstancing::Update() {
 void CBoxInstancing::Draw() {
 	m_CubeMountain->Draw([&]() {
 		m_CubeMountain->m_material->SetIntUniform("_instancedCound", m_InstanceNum);
-		m_CubeMountain->m_material->SetIntUniform("_m_SideCubeCount", m_SideCubeCount);
+		m_CubeMountain->m_material->SetIntUniform("_sideCubeCount", m_SideCubeCount);
 		m_CubeMountain->m_material->SetFloatUniform("_cubeWidth", 1.0);
 		m_CubeMountain->m_material->SetVec3Uniform("_lightDir", glm::vec3(-2.0, 1.0, 1.0));
 		m_CubeMountain->m_material->SetFloatUniform("_Roughness", 0.5);

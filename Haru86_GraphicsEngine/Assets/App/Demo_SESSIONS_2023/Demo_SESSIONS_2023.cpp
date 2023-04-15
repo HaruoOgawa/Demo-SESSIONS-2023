@@ -60,12 +60,12 @@ namespace app
     {
         // ライトポジション
         GraphicsMain::GetInstance()->m_GroabalLightPosition->m_position = glm::vec3(
-            0.0f,
-            5.0f,
-            0.0f
+            1.0f,
+            1.0f,
+            -1.0f
         );
 
-        float time = GraphicsMain::GetInstance()->m_SecondsTime, r = 2.0f;
+        float time = GraphicsMain::GetInstance()->m_SecondsTime, r = 10.0f;
         GraphicsMain::GetInstance()->m_MainCamera->m_position = glm::vec3(r * glm::cos(time), r * 1.0f, r * glm::sin(time));
 
         //m_Forest->Update();
