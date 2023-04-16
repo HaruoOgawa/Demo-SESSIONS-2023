@@ -12,8 +12,8 @@ namespace app
 
 		m_InitSY(1.0f),
 		m_MaxBoxHeight(80.0f),
-		m_AddedBoxHeight(0.05f),
-		m_Atten(0.95f),
+		m_AddedBoxHeight(0.5f),
+		m_Atten(0.5f),
 		
 		m_CubeMountain(nullptr),
 		m_GPGPU(nullptr),

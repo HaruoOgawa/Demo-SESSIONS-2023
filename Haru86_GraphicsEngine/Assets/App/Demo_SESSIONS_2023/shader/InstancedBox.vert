@@ -18,7 +18,7 @@ struct SBoxData
     vec4 Pos;
     vec4 Rot;
     vec4 Scl;
-    vec4 Pad;
+    vec4 Data;
 };
 
 layout(std430,binding=3) buffer destBoxDataBuffer

@@ -9,7 +9,7 @@ struct SBoxData
     vec4 Pos;
     vec4 Rot;
     vec4 Scl;
-    vec4 Pad;
+    vec4 Data;
 };
 
 layout(std430,binding=3) buffer destBoxDataBuffer
@@ -66,10 +66,15 @@ void main()
 	uint DID = gl_GlobalInvocationID.x;
 	SBoxData data = outBoxDataBuffer.data[DID];
 
-	float Scl = data.Scl.y * _Atten;
+	float Scl = data.Scl.y;
+	for(float i = 0.0; i < data.Data.x; i++)
+	{
+		Scl *= _Atten;
+	}
 	Scl = max(Scl, _InitSY);
 	data.Scl.y = Scl;
 	data.Pos.y = Scl * 0.5;
+	data.Data.x = 0.0;
 
 	outBoxDataBuffer.data[DID] = data;
 }

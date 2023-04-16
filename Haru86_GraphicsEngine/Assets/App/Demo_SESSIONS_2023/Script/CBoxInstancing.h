@@ -14,7 +14,7 @@ namespace app
         float Pos[4];
         float Rot[4];
         float Scl[4];
-        float Pad[4];
+        float Data[4];
     };
 
     class CBoxInstancing

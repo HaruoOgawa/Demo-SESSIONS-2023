@@ -52,12 +52,12 @@ struct SBoxData
     vec4 Pos;
     vec4 Rot;
     vec4 Scl;
-    vec4 Pad;
+    vec4 Data;
 };
 
 layout(std430,binding=3) buffer destBoxDataBuffer
 {
-	SBoxData data[];
+	SBoxData box[];
 } outBoxDataBuffer;
 
 void main()
@@ -97,17 +97,18 @@ void main()
 		GridID = Data.GridID4Box;
 	}
 
-	SBoxData data = outBoxDataBuffer.data[GridID];
-	float BoxSY = data.Scl.y;
-	BoxSY += _AddedBoxHeight * min(1.0, exp(-0.01*length(Data.Pos)));
+	SBoxData box = outBoxDataBuffer.box[GridID];
+	float BoxSY = box.Scl.y;
+	BoxSY += _AddedBoxHeight * min(1.0, exp(-0.0001*length(Data.Pos)));
 
 	if(BoxSY <= _MaxBoxHeight)
 	{
-		data.Scl.y = BoxSY;
-		data.Pos.y = BoxSY * 0.5;
+		box.Scl.y = BoxSY;
+		box.Pos.y = BoxSY * 0.5;
+		box.Data.x += 1.0;
 	}
 
-	outBoxDataBuffer.data[GridID] = data;
+	outBoxDataBuffer.box[GridID] = box;
 }
 
 )"
