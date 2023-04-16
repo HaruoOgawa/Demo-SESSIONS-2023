@@ -9,7 +9,12 @@ namespace app
 		m_CubeNum(512 * 512),
 		m_CubeWidth(1.0f),
 		m_CubeThreads(512, 1, 1),
+
 		m_InitSY(1.0f),
+		m_MaxBoxHeight(80.0f),
+		m_AddedBoxHeight(1.0f),
+		m_Atten(0.5f),
+		
 		m_CubeMountain(nullptr),
 		m_GPGPU(nullptr),
 		m_cubeGroundBuffer(nullptr)
@@ -76,6 +81,7 @@ namespace app
 		mat->SetActive();
 		mat->SetFloatUniform("_time", SceneTime);
 		mat->SetFloatUniform("_InitSY", m_InitSY);
+		mat->SetFloatUniform("_Atten", m_Atten);
 		mat->Dispatch(m_CubeNum / m_CubeThreads.x, 1, 1);
 	}
 
@@ -83,6 +89,7 @@ namespace app
 		m_CubeMountain->Draw([&]() {
 			m_CubeMountain->m_material->SetFloatUniform("_Roughness", 0.5);
 			m_CubeMountain->m_material->SetFloatUniform("_FresnelReflectance", 1.0);
+			m_CubeMountain->m_material->SetFloatUniform("_MaxBoxHeight", m_MaxBoxHeight);
 			}, GL_TRIANGLES, true, m_CubeNum);
 	}
 

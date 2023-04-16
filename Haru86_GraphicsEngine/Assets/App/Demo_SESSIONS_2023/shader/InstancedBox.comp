@@ -9,7 +9,7 @@ struct SBoxData
     vec4 Pos;
     vec4 Rot;
     vec4 Scl;
-    vec4 Pad;
+    vec4 Data;
 };
 
 layout(std430,binding=3) buffer destBoxDataBuffer
@@ -19,6 +19,7 @@ layout(std430,binding=3) buffer destBoxDataBuffer
 
 uniform float _time;
 uniform float _InitSY;
+uniform float _Atten;
 
 #define rot(a) mat2(cos(a),-sin(a),sin(a),cos(a))
 #define PI 3.14159265
@@ -65,9 +66,15 @@ void main()
 	uint DID = gl_GlobalInvocationID.x;
 	SBoxData data = outBoxDataBuffer.data[DID];
 
-	float InitSY = 1.0;
-	data.Scl.y = _InitSY;
-	data.Pos.y = _InitSY * 0.5;
+	float Scl = data.Scl.y;
+	for(float i = 0.0; i < data.Data.x; i++)
+	{
+		Scl *= _Atten;
+	}
+	Scl = max(Scl, _InitSY);
+	data.Scl.y = Scl;
+	data.Pos.y = Scl * 0.5;
+	data.Data.x = 0.0;
 
 	outBoxDataBuffer.data[DID] = data;
 }

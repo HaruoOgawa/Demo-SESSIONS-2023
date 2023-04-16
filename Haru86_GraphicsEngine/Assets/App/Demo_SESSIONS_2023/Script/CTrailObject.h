@@ -9,6 +9,8 @@ class Material;
 
 namespace app
 {
+	class CBoxInstancing;
+
 	struct SFlowData
 	{
 		float Pos[4]; // pos.x, pos.y, pos.z, 0.0
@@ -73,8 +75,7 @@ namespace app
 		// Segment Param
 		std::shared_ptr<ComputeBuffer> m_SegmentBuffer;
 		std::shared_ptr<Material> m_SegmentGPGPU;
-		float m_MaxBoxHeight;
-
+		
 		// Art Param
 		unsigned int m_DomainCount;
 		unsigned int m_TrailNumPerDomain; // Curve Count
@@ -94,7 +95,7 @@ namespace app
 		virtual ~CTrailObject();
 
 		void Init();
-		void Update();
+		void Update(const std::shared_ptr<CBoxInstancing>& BoxInstancing);
 		void Draw();
 
 		const glm::vec4& GetWallHalfSize() const { return m_WallHalfSize; }

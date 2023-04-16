@@ -34,7 +34,7 @@ namespace app
         //GraphicsMain::GetInstance()->m_SecondsTimeOffset = 0.0f;// シーンを飛ばすためのオフセット
 
         // 音楽のミュート
-        GraphicsMain::GetInstance()->m_SoundPlayer->Mute(true);
+        //GraphicsMain::GetInstance()->m_SoundPlayer->Mute(true);
 
         // デバッグ用
         /*{
@@ -47,29 +47,33 @@ namespace app
 
     void Demo_SESSIONS_2023::Update()
     {
-        // ライトポジション
-        GraphicsMain::GetInstance()->m_DirectionalLightDir = glm::normalize(glm::vec3(-2.0f, 1.0f, 1.0f));
+        GraphicsMain::GetInstance()->m_DirectionalLightDir = glm::normalize(glm::vec3(1.0f, 0.5f, 1.0f));
 
         // Camera
-        float time = GraphicsMain::GetInstance()->m_SecondsTime, r = 50.0f;
-        GraphicsMain::GetInstance()->m_MainCamera->m_position = glm::vec3(r * glm::cos(time), r * 0.5f, r * glm::sin(time));
+        float time = GraphicsMain::GetInstance()->m_SecondsTime * 0.1f, r = 60.0f;
+        //time = 0.0f;
+        GraphicsMain::GetInstance()->m_MainCamera->m_position = glm::vec3(r * glm::cos(time), r * 2.0f, r * glm::sin(time));
 
         // Obj
         m_BoxInstancing->Update(time);
-        m_TrailObject->Update();
+        m_TrailObject->Update(m_BoxInstancing);
 
         //
-        if (GraphicsMain::GetInstance()->m_SecondsTime >= 30.0f)
+#ifndef _DEBUG
+        if (GraphicsMain::GetInstance()->m_SecondsTime >= 60.0f)
         {
             GraphicsMain::GetInstance()->isRunning = false;
             return;
         }
+#endif // !_DEBUG
     }
 
     void Demo_SESSIONS_2023::Draw()
     {
         m_BoxInstancing->Draw();
-        m_TrailObject->Draw();
+#ifdef _DEBUG
+        //m_TrailObject->Draw();
+#endif // _DEBUG
     }
 
     void Demo_SESSIONS_2023::UpdateTimeline(float SceneTime)

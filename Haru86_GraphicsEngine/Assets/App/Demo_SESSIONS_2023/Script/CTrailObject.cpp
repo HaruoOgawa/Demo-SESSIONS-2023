@@ -1,6 +1,7 @@
 #include "CTrailObject.h"
 #include "GraphicsEngine/Component/MeshRendererComponent.h"
 #include "GraphicsEngine/Graphics/ComputeBuffer.h"
+#include "CBoxInstancing.h"
 
 namespace app
 {
@@ -31,15 +32,13 @@ namespace app
 		m_AngleScale(glm::vec2(2.0f, 2.0f)),
 		m_Seed(glm::vec4(glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f))),
 		
-		m_DomainCount(16),
+		m_DomainCount(2),
 		m_TrailNumPerDomain(1024),
-		m_TrailSegmentNum(64),
-		m_StepLength(1.0f),
-		m_StepSpeed(1.0f),
+		m_TrailSegmentNum(256),
+		m_StepLength(2.0f),
+		m_StepSpeed(0.5f),
 		m_CurveAlpha(1.0f),
-		m_CurveTickness(0.25f),
-
-		m_MaxBoxHeight(10.0f)
+		m_CurveTickness(0.25f)
 	{
 		Init();
 	}
@@ -237,7 +236,7 @@ namespace app
 		m_SegmentGPGPU->SetBufferToCS(CubeGroundBuffer, 3);
 	}
 
-	void CTrailObject::Update()
+	void CTrailObject::Update(const std::shared_ptr<CBoxInstancing>& BoxInstancing)
 	{
 		// シードを更新
 		float t = GraphicsMain::GetInstance()->m_SecondsTime;
@@ -276,12 +275,12 @@ namespace app
 		m_SegmentGPGPU->SetFloatUniform("_time", t);
 		m_SegmentGPGPU->SetFloatUniform("_deltaTime", GraphicsMain::GetInstance()->m_DeltaTime);
 		m_SegmentGPGPU->SetIntUniform("_SegmentNum", m_TrailSegmentNum);
-		m_SegmentGPGPU->SetFloatUniform("_MaxBoxHeight", m_MaxBoxHeight);
+		m_SegmentGPGPU->SetFloatUniform("_MaxBoxHeight", BoxInstancing->GetMaxBoxHeight());
+		m_SegmentGPGPU->SetFloatUniform("_AddedBoxHeight", BoxInstancing->GetAddedBoxHeight());
 		m_SegmentGPGPU->Dispatch(m_DomainCount * m_TrailNumPerDomain * m_TrailSegmentNum / m_ThreadNum.x, 1, 1);
 	}
 	void CTrailObject::Draw()
 	{
-#ifdef _DEBUG
 		// Debug FlowFields
 		m_FlowFieldsMesh->Draw([&]() {
 			m_FlowFieldsMesh->m_material->SetIntUniform("_Use2FColor", 1);
@@ -295,6 +294,5 @@ namespace app
 			m_SegmentMesh->m_material->SetIntUniform("_Use2FColor", 1);
 			m_SegmentMesh->m_material->SetVec4Uniform("_WallHalfSize", m_WallHalfSize);
 			}, GL_POINTS, true, m_DomainCount * m_TrailNumPerDomain * m_TrailSegmentNum);
-#endif // _DEBUG
 	}
 }
