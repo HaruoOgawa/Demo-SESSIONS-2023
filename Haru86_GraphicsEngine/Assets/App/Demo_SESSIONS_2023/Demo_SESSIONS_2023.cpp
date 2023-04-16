@@ -1,6 +1,7 @@
 #include "Demo_SESSIONS_2023.h"
 #include "GraphicsEngine/GraphicsMain/GraphicsMain.h"
 #include "GraphicsEngine/Graphics/GraphicsRenderer.h"
+#include "GraphicsEngine/Graphics/PostProcess.h"
 #include "GraphicsEngine/Sound/SoundPlayer.h"
 #include "./Script/CBoxInstancing.h"
 #include "./Script/CTrailObject.h"
@@ -47,6 +48,10 @@ namespace app
 
     void Demo_SESSIONS_2023::Update()
     {
+        PostProcess::GetInstance()->m_UseBloom = true;
+        PostProcess::GetInstance()->m_BloomIntensity = 2.0f;
+        PostProcess::GetInstance()->m_BloomThreshold = 0.5f;
+
         GraphicsMain::GetInstance()->m_DirectionalLightDir = glm::normalize(glm::vec3(1.0f, 0.5f, 1.0f));
 
         // Camera

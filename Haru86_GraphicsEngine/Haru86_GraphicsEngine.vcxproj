@@ -420,6 +420,7 @@ xcopy "$(ProjectDir)GraphicsEngine\Assets\Sound\stroke.wav" "$(OutDir)" /i /s /y
     <ClInclude Include="Assets\App\Demo_SESSIONS_2023\Demo_SESSIONS_2023.h" />
     <ClInclude Include="Assets\App\Demo_SESSIONS_2023\Script\CBoxInstancing.h" />
     <ClInclude Include="Assets\App\Demo_SESSIONS_2023\Script\CTrailObject.h" />
+    <ClInclude Include="GraphicsEngine\Graphics\CBloom.h" />
     <ClInclude Include="GraphicsEngine\Graphics\ComputeBuffer.h" />
     <ClInclude Include="GraphicsEngine\Graphics\Shader\PostProcess_Frag.h" />
     <ClInclude Include="GraphicsEngine\Graphics\Shader\PostProcess_FragComp.h" />
@@ -462,6 +463,7 @@ xcopy "$(ProjectDir)GraphicsEngine\Assets\Sound\stroke.wav" "$(OutDir)" /i /s /y
     <ClCompile Include="Assets\App\Demo_SESSIONS_2023\Demo_SESSIONS_2023.cpp" />
     <ClCompile Include="Assets\App\Demo_SESSIONS_2023\Script\CBoxInstancing.cpp" />
     <ClCompile Include="Assets\App\Demo_SESSIONS_2023\Script\CTrailObject.cpp" />
+    <ClCompile Include="GraphicsEngine\Graphics\CBloom.cpp" />
     <ClCompile Include="GraphicsEngine\Graphics\ComputeBuffer.cpp" />
     <ClCompile Include="GraphicsEngine\GraphicsMain\GraphicsMain.cpp" />
     <ClCompile Include="GraphicsEngine\Graphics\GraphicsRenderer.cpp" />

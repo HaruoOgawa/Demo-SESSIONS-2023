@@ -8,6 +8,7 @@
 #include "GraphicsEngine/Graphics/ShaderLib.h"
 #include "GraphicsEngine/Component/TransformComponent.h"
 #include "GraphicsEngine/Component/MeshRendererComponent.h"
+#include "CBloom.h"
 
 //instance‚ð’è‹`‚·‚é
 PostProcess* PostProcess::instance = nullptr;
@@ -29,6 +30,10 @@ void PostProcess::DestroyInstance() {
 
 PostProcess::PostProcess():
 	m_UsePostProcess(false),
+	m_UseBloom(false),
+	m_BloomIntensity(0.0),
+	m_Bloom(std::make_unique<CBloom>()),
+	m_BloomTexture(std::make_shared<Texture>()),
 	m_PostProcesCallBack([]() {})
 {
 	m_MeshRenderer = std::make_shared<MeshRendererComponent>(
@@ -39,9 +44,16 @@ PostProcess::PostProcess():
 		shaderlib::PostProcess_frag
 	);
 	m_MeshRenderer->useZTest = false;
+
+	if (!GraphicsRenderer::GetInstance()->CreateFrameBuffer(GraphicsRenderer::GetInstance()->GetScreenSize().x, GraphicsRenderer::GetInstance()->GetScreenSize().y, m_BloomTexture, m_BloomFrameBuffer, GL_RGBA16F, GL_RGBA, GL_FLOAT)) {
+		printf("Cannot Create FrameBuffer\n");
+	}
 }
 
 void PostProcess::DrawPostProcess(const std::shared_ptr<Texture>& SrcTexture, const unsigned int& DestBuffer)const {
+	// Draw Bloom
+	if (m_UseBloom) m_Bloom->Draw(SrcTexture, m_BloomFrameBuffer);
+	
 	glBindFramebuffer(GL_FRAMEBUFFER, DestBuffer);
 	glViewport(0, 0, static_cast<int>(GraphicsRenderer::GetInstance()->GetScreenSize().x), static_cast<int>(GraphicsRenderer::GetInstance()->GetScreenSize().y));
 
@@ -50,9 +62,23 @@ void PostProcess::DrawPostProcess(const std::shared_ptr<Texture>& SrcTexture, co
 
 	m_MeshRenderer->Draw([&]() {
 		m_PostProcesCallBack();
-		SrcTexture->SetActive(GL_TEXTURE0);
+		if (m_UseBloom)
+		{
+			m_BloomTexture->SetActive(GL_TEXTURE0);
+		}
+		else
+		{
+			SrcTexture->SetActive(GL_TEXTURE0);
+		}
 		m_MeshRenderer->m_material->SetTexUniform("_SrcTexture", 0);
 	
 	}, GL_TRIANGLES, false, 0);
-	SrcTexture->SetEnactive(GL_TEXTURE0);
+	if (m_UseBloom)
+	{
+		m_BloomTexture->SetEnactive(GL_TEXTURE0);
+	}
+	else
+	{
+		SrcTexture->SetEnactive(GL_TEXTURE0);
+	}
 }
