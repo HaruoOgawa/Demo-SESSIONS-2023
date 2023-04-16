@@ -57,7 +57,7 @@ namespace app
         // Camera
         float time = GraphicsMain::GetInstance()->m_SecondsTime * 0.1f, r = 60.0f;
         //time = 0.0f;
-        GraphicsMain::GetInstance()->m_MainCamera->m_position = glm::vec3(r * glm::cos(time), r * 2.0f, r * glm::sin(time));
+        GraphicsMain::GetInstance()->m_MainCamera->m_position = glm::vec3(r * glm::cos(time), r, r * glm::sin(time));
 
         // Obj
         m_BoxInstancing->Update(time);
