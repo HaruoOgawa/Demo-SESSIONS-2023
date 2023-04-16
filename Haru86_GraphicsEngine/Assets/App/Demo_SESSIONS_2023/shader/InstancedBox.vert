@@ -36,6 +36,13 @@ float rand(vec2 seeds){
   return fract(sin(dot(seeds, vec2(12.9898,78.233))) * 43758.5453);
 }
 
+vec3 hsv2rgb(vec3 c)
+{
+    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
 vec3 hsv2rgb2(vec3 c, float k) {
     return smoothstep(0. + k, 1. - k,
         .5 + .5 * cos((vec3(c.x, c.x, c.x) + vec3(3., 2., 1.) / 3.) * radians(360.)));
@@ -61,8 +68,7 @@ void main(){
 	id=float(gl_InstanceID);
 
 	float rate = data.Scl.y/_MaxBoxHeight;
-	rate = mod(rate + 0.125, 1.0);
-	randColor=hsv2rgb2(vec3(rate, 1.0, 1.0), 1.5);
+	randColor=hsv2rgb(vec3(mod(rate + _time*0.1, 1.0), 1.0 - rate, 1.0));
 
 	uv=texcoord;
 }

@@ -281,6 +281,7 @@ namespace app
 	}
 	void CTrailObject::Draw()
 	{
+#ifdef _DEBUG
 		// Debug FlowFields
 		m_FlowFieldsMesh->Draw([&]() {
 			m_FlowFieldsMesh->m_material->SetIntUniform("_Use2FColor", 1);
@@ -294,5 +295,6 @@ namespace app
 			m_SegmentMesh->m_material->SetIntUniform("_Use2FColor", 1);
 			m_SegmentMesh->m_material->SetVec4Uniform("_WallHalfSize", m_WallHalfSize);
 			}, GL_POINTS, true, m_DomainCount * m_TrailNumPerDomain * m_TrailSegmentNum);
+#endif // _DEBUG
 	}
 }
