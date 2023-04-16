@@ -30,7 +30,6 @@ layout(std430, binding = 2) buffer FlowDataBuffer
 
 #define pi 3.1415
 
-
 void main()
 {
 	uint DID = gl_GlobalInvocationID.x;
