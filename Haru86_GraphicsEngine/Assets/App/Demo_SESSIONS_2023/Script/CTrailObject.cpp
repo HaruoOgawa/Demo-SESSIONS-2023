@@ -7,7 +7,6 @@ namespace app
 	CTrailObject::CTrailObject() :
 #ifdef _DEBUG
 		m_FlowFieldsMesh(nullptr),
-		m_SegmentMesh(nullptr),
 #endif // _DEBUG
 		m_FlowFieldsBuffer(nullptr),
 		m_FlowFieldsGPGPU(nullptr),
@@ -15,15 +14,17 @@ namespace app
 		m_TrailBuffer(nullptr),
 		m_TrailGPGPU(nullptr),
 
+		m_SegmentMesh(nullptr),
 		m_SegmentBuffer(nullptr),
 		m_SegmentGPGPU(nullptr),
 
 		m_ThreadNum(512, 1, 1),
-		m_FlowThreads(512, 1, 1),
-		m_WallHalfSize(glm::vec4(512, 1.0f, 512, 1.0f)),
+		m_FlowThreads(8, 8, 8),
+		m_WallHalfSize(glm::vec4(512, 50.0f, 512, 1.0f)),
 
-		m_FlowGridX(512.0f),
-		m_FlowGridZ(512.0f),
+		m_FlowGridX(128.0f),
+		m_FlowGridY(128.0f),
+		m_FlowGridZ(128.0f),
 		m_FlowCellSize(1.0f),
 		m_NoiseScale(glm::vec2(1.0f, 1.0f)),
 		m_NoiseOctaves(glm::vec2(2.0f, 2.0f)),
@@ -34,8 +35,8 @@ namespace app
 		m_DomainCount(2),
 		m_TrailNumPerDomain(1024),
 		m_TrailSegmentNum(256),
-		m_StepLength(2.0f),
-		m_StepSpeed(0.5f),
+		m_StepLength(1.0f),
+		m_StepSpeed(1.0f),
 		m_CurveAlpha(1.0f),
 		m_CurveTickness(0.25f)
 	{
@@ -65,24 +66,7 @@ namespace app
 				shaderlib::Standard_frag
 				);
 
-		m_FlowFieldsMesh->useZTest = false;
-
-		m_SegmentMesh = std::make_shared<MeshRendererComponent>(
-			std::make_shared<TransformComponent>(),
-			PrimitiveType::POINT,
-			RenderingSurfaceType::RASTERIZER,
-			std::string({
-				#include "../shader/Segment.vert"	
-				}),
-				shaderlib::Standard_frag,
-				std::string({
-					#include "../shader/Segment.geom"	
-					})
-					);
-
-		m_SegmentMesh->useZTest = false;
-		m_SegmentMesh->useAlphaTest = false;
-
+		//m_FlowFieldsMesh->useZTest = false;
 #endif // _DEBUG
 
 		m_FlowFieldsGPGPU = std::make_shared<Material>(
@@ -103,6 +87,22 @@ namespace app
 		);
 
 		// Segment
+		m_SegmentMesh = std::make_shared<MeshRendererComponent>(
+			std::make_shared<TransformComponent>(),
+			PrimitiveType::POINT,
+			RenderingSurfaceType::RASTERIZER,
+			std::string({
+				#include "../shader/Segment.vert"	
+				}),
+				shaderlib::Standard_frag,
+				std::string({
+					#include "../shader/Segment.geom"	
+					})
+					);
+
+		//m_SegmentMesh->useZTest = false;
+		m_SegmentMesh->useAlphaTest = false;
+
 		m_SegmentGPGPU = std::make_shared<Material>(
 			RenderingSurfaceType::RASTERIZER,
 			"", "", "", "", "",
@@ -112,7 +112,7 @@ namespace app
 				);
 
 		// Buffer
-		m_FlowFieldsBuffer = std::make_shared<ComputeBuffer>(m_FlowGridX * m_FlowGridZ * sizeof(SFlowData));
+		m_FlowFieldsBuffer = std::make_shared<ComputeBuffer>(m_FlowGridX * m_FlowGridY * m_FlowGridZ * sizeof(SFlowData));
 		m_TrailBuffer = std::make_shared<ComputeBuffer>(m_DomainCount * m_TrailNumPerDomain * sizeof(STrailData));
 		m_SegmentBuffer = std::make_shared<ComputeBuffer>(m_DomainCount * m_TrailNumPerDomain * m_TrailSegmentNum * sizeof(SSegmentData));
 
@@ -126,19 +126,23 @@ namespace app
 		std::vector<SFlowData> InitFlowData;
 		for (float z = 0.0f; z < m_FlowGridZ; z++)
 		{
-			for (float x = 0.0f; x < m_FlowGridX; x++)
+			for (float y = 0.0f; y < m_FlowGridY; y++)
 			{
-				glm::vec3 pos = glm::vec3(x / (m_FlowGridX - 1.0f), 0.0f, z / (m_FlowGridZ - 1.0f));
-				pos = pos * 2.0f - 1.0f;
-				pos.x *= m_WallHalfSize.x;
-				pos.z *= m_WallHalfSize.z;
+				for (float x = 0.0f; x < m_FlowGridX; x++)
+				{
+					glm::vec3 pos = glm::vec3(x / (m_FlowGridX - 1.0f), y / (m_FlowGridY - 1.0f), z / (m_FlowGridZ - 1.0f));
+					pos = pos * 2.0f - 1.0f;
+					pos.x *= m_WallHalfSize.x;
+					pos.y *= m_WallHalfSize.y;
+					pos.z *= m_WallHalfSize.z;
 
-				SFlowData data = {
-					{pos.x, 0.0f, pos.z, 0.0f},
-					{0.0f, 0.0f, 0.0f, 0.0f}
-				};
+					SFlowData data = {
+						{pos.x, pos.y, pos.z, 0.0f},
+						{0.0f, 0.0f, 0.0f, 0.0f}
+					};
 
-				InitFlowData.push_back(data);
+					InitFlowData.push_back(data);
+				}
 			}
 		}
 		
@@ -155,7 +159,7 @@ namespace app
 				float id = static_cast<float>(m_TrailNumPerDomain * d + t);
 				glm::vec4 pos = glm::vec4(
 					m_WallHalfSize.x * (Noise(glm::vec2(id, 0.741f)) * 2.0f - 1.0f),
-					0.0f,
+					m_WallHalfSize.y * (Noise(glm::vec2(id, 942.0f)) * 2.0f - 1.0f),
 					m_WallHalfSize.z * (Noise(glm::vec2(id, 77.7f)) * 2.0f - 1.0f),
 					1.0f
 				);
@@ -217,7 +221,6 @@ namespace app
 		// FlowFields
 #ifdef _DEBUG
 		m_FlowFieldsMesh->m_material->SetBufferToMat(m_FlowFieldsBuffer, 2);
-		m_SegmentMesh->m_material->SetBufferToMat(m_SegmentBuffer, 1);
 #endif // _DEBUG
 		m_FlowFieldsGPGPU->SetBufferToCS(m_FlowFieldsBuffer, 2);
 
@@ -226,6 +229,7 @@ namespace app
 		m_TrailGPGPU->SetBufferToCS(m_FlowFieldsBuffer, 2);
 
 		// Segment
+		m_SegmentMesh->m_material->SetBufferToMat(m_SegmentBuffer, 1);
 		m_SegmentGPGPU->SetBufferToCS(m_TrailBuffer, 0);
 		m_SegmentGPGPU->SetBufferToCS(m_SegmentBuffer, 1);
 	}
@@ -244,6 +248,7 @@ namespace app
 		m_FlowFieldsGPGPU->SetFloatUniform("_deltaTime", GraphicsMain::GetInstance()->m_DeltaTime);
 		m_FlowFieldsGPGPU->SetVec4Uniform("_WallHalfSize", m_WallHalfSize);
 		m_FlowFieldsGPGPU->SetIntUniform("_FlowGridX", static_cast<int>(m_FlowGridX));
+		m_FlowFieldsGPGPU->SetIntUniform("_FlowGridY", static_cast<int>(m_FlowGridY));
 		m_FlowFieldsGPGPU->SetIntUniform("_FlowGridZ", static_cast<int>(m_FlowGridZ));
 
 		m_FlowFieldsGPGPU->SetVec2Uniform("_NoiseScale", m_NoiseScale);
@@ -251,7 +256,7 @@ namespace app
 		m_FlowFieldsGPGPU->SetVec2Uniform("_NoiseOffset", m_NoiseOffset);
 		m_FlowFieldsGPGPU->SetVec2Uniform("_AngleScale", m_AngleScale);
 		m_FlowFieldsGPGPU->SetVec4Uniform("_Seed", m_Seed);
-		m_FlowFieldsGPGPU->Dispatch(m_FlowGridX * m_FlowGridZ / m_FlowThreads.x, 1, 1);
+		m_FlowFieldsGPGPU->Dispatch(static_cast<int>(m_FlowGridX) / m_FlowThreads.x, static_cast<int>(m_FlowGridY) / m_FlowThreads.y, static_cast<int>(m_FlowGridZ) / m_FlowThreads.z);
 
 		// Trail
 		m_TrailGPGPU->SetActive();
@@ -259,6 +264,7 @@ namespace app
 		m_TrailGPGPU->SetFloatUniform("_deltaTime", GraphicsMain::GetInstance()->m_DeltaTime);
 		m_TrailGPGPU->SetVec4Uniform("_WallHalfSize", m_WallHalfSize);
 		m_TrailGPGPU->SetFloatUniform("_FlowGridX", m_FlowGridX);
+		m_TrailGPGPU->SetFloatUniform("_FlowGridY", m_FlowGridY);
 		m_TrailGPGPU->SetFloatUniform("_FlowGridZ", m_FlowGridZ);
 		m_TrailGPGPU->SetFloatUniform("_StepLength", m_StepLength);
 		m_TrailGPGPU->SetFloatUniform("_StepSpeed", m_StepSpeed);
@@ -275,11 +281,12 @@ namespace app
 	{
 #ifdef _DEBUG
 		// Debug FlowFields
-		m_FlowFieldsMesh->Draw([&]() {
-			m_FlowFieldsMesh->m_material->SetIntUniform("_Use2FColor", 1);
-			m_FlowFieldsMesh->m_material->SetFloatUniform("_FlowCellSize", m_FlowCellSize);
-		}, GL_TRIANGLES, true, static_cast<int>(m_FlowGridX * m_FlowGridZ));
-
+				/*m_FlowFieldsMesh->Draw([&]() {
+					m_FlowFieldsMesh->m_material->SetIntUniform("_Use2FColor", 1);
+					m_FlowFieldsMesh->m_material->SetFloatUniform("_FlowCellSize", m_FlowCellSize);
+				}, GL_TRIANGLES, true, static_cast<int>(m_FlowGridX * m_FlowGridY* m_FlowGridZ));*/
+#endif // _DEBUG
+		
 		// Segment
 		m_SegmentMesh->Draw([&]() {
 			m_SegmentMesh->m_material->SetIntUniform("_SegmentNum", m_TrailSegmentNum);
@@ -287,6 +294,5 @@ namespace app
 			m_SegmentMesh->m_material->SetIntUniform("_Use2FColor", 1);
 			m_SegmentMesh->m_material->SetVec4Uniform("_WallHalfSize", m_WallHalfSize);
 			}, GL_POINTS, true, m_DomainCount * m_TrailNumPerDomain * m_TrailSegmentNum);
-#endif // _DEBUG
 	}
 }

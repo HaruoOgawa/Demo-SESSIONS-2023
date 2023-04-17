@@ -73,9 +73,7 @@ namespace app
     void Demo_SESSIONS_2023::Draw()
     {
         m_BoxInstancing->Draw();
-#ifdef _DEBUG
-        //m_TrailObject->Draw();
-#endif // _DEBUG
+        m_TrailObject->Draw();
     }
 
     void Demo_SESSIONS_2023::UpdateTimeline(float SceneTime)
