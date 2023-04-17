@@ -14,6 +14,7 @@ namespace app
 		m_MaxBoxHeight(80.0f),
 		m_AddedBoxHeight(1.0f),
 		m_Atten(0.5f),
+		m_CommonYOffset(-25.0f),
 		
 		m_CubeMountain(nullptr),
 		m_GPGPU(nullptr),
@@ -79,12 +80,14 @@ namespace app
 		auto& mat = m_GPGPU->m_material;
 		mat->SetActive();
 		mat->SetFloatUniform("_time", SceneTime);
+		mat->SetFloatUniform("_CommonYO", m_CommonYOffset);
 		mat->Dispatch(m_CubeNum / m_CubeThreads.x, 1, 1);
 	}
 
 	void CBoxInstancing::Draw() {
 		m_CubeMountain->Draw([&]() {
 			m_CubeMountain->m_material->SetFloatUniform("_MaxBoxHeight", m_MaxBoxHeight);
+			m_CubeMountain->m_material->SetFloatUniform("_SideCubeNum", static_cast<float>(m_SideCubeNum));
 			}, GL_TRIANGLES, true, m_CubeNum);
 	}
 

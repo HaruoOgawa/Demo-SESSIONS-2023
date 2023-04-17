@@ -20,7 +20,7 @@ namespace app
 
 		m_ThreadNum(512, 1, 1),
 		m_FlowThreads(8, 8, 8),
-		m_WallHalfSize(glm::vec4(512, 50.0f, 512, 1.0f)),
+		m_WallHalfSize(glm::vec4(256.0f, 25.0f, 256.0f, 1.0f)),
 
 		m_FlowGridX(128.0f),
 		m_FlowGridY(128.0f),
@@ -29,7 +29,7 @@ namespace app
 		m_NoiseScale(glm::vec2(1.0f, 1.0f)),
 		m_NoiseOctaves(glm::vec2(2.0f, 2.0f)),
 		m_NoiseOffset(glm::vec2(0.0f, 0.0f)),
-		m_AngleScale(glm::vec2(2.0f, 2.0f)),
+		m_AngleScale(glm::vec2(0.5f, 2.0f)),
 		m_Seed(glm::vec4(glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f))),
 		
 		m_DomainCount(2),
