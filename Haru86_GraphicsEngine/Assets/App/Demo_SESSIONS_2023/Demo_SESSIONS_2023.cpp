@@ -1,6 +1,7 @@
 #include "Demo_SESSIONS_2023.h"
 #include "GraphicsEngine/GraphicsMain/GraphicsMain.h"
 #include "GraphicsEngine/Graphics/GraphicsRenderer.h"
+#include "GraphicsEngine/Graphics/PostProcess.h"
 #include "GraphicsEngine/Sound/SoundPlayer.h"
 #include "./Script/CBoxInstancing.h"
 #include "./Script/CTrailObject.h"
@@ -24,9 +25,6 @@ namespace app
         m_BoxInstancing = std::make_shared<CBoxInstancing>();
         m_TrailObject = std::make_shared<CTrailObject>();
 
-        // BoxのバッファをTrailObjectのCSと結びつける
-        m_TrailObject->LinkBoxBufferToSegmentCS(m_BoxInstancing->GetCubeGroundBuffer());
-        
 #ifdef _DEBUG
         //GraphicsMain::GetInstance()->m_ShowDebugLog = true;
 
@@ -47,16 +45,20 @@ namespace app
 
     void Demo_SESSIONS_2023::Update()
     {
+        PostProcess::GetInstance()->m_UseBloom = true;
+        PostProcess::GetInstance()->m_BloomIntensity = 2.0f;
+        PostProcess::GetInstance()->m_BloomThreshold = 0.5f;
+
         GraphicsMain::GetInstance()->m_DirectionalLightDir = glm::normalize(glm::vec3(1.0f, 0.5f, 1.0f));
 
         // Camera
-        float time = GraphicsMain::GetInstance()->m_SecondsTime * 0.1f, r = 60.0f;
+        float time = GraphicsMain::GetInstance()->m_SecondsTime * 0.1f, r = 100.0f;
         //time = 0.0f;
-        GraphicsMain::GetInstance()->m_MainCamera->m_position = glm::vec3(r * glm::cos(time), r * 2.0f, r * glm::sin(time));
+        GraphicsMain::GetInstance()->m_MainCamera->m_position = glm::vec3(r * glm::cos(time), r, r * glm::sin(time));
 
         // Obj
         m_BoxInstancing->Update(time);
-        m_TrailObject->Update(m_BoxInstancing);
+        m_TrailObject->Update();
 
         //
 #ifndef _DEBUG
@@ -71,9 +73,7 @@ namespace app
     void Demo_SESSIONS_2023::Draw()
     {
         m_BoxInstancing->Draw();
-#ifdef _DEBUG
-        //m_TrailObject->Draw();
-#endif // _DEBUG
+        m_TrailObject->Draw();
     }
 
     void Demo_SESSIONS_2023::UpdateTimeline(float SceneTime)

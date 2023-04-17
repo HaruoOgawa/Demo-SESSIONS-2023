@@ -9,6 +9,7 @@ uniform float _time;
 uniform float _deltaTime;
 uniform vec4 _WallHalfSize;
 uniform float _FlowGridX;
+uniform float _FlowGridY;
 uniform float _FlowGridZ;
 uniform float _StepLength;
 uniform float _StepSpeed;
@@ -86,12 +87,13 @@ void main()
 	{
 		vec3 GridPos = pos.xyz / _WallHalfSize.xyz;
 		GridPos = GridPos * 0.5 + 0.5;
-		GridPos *= vec3(_FlowGridX - 1.0f, 1.0, _FlowGridZ - 1.0f);
-		int GridID = int(floor(GridPos.z) * _FlowGridX + floor(GridPos.x));
+		GridPos *= vec3(_FlowGridX - 1.0f, _FlowGridY - 1.0f, _FlowGridZ - 1.0f);
+		int GridID = int(floor(GridPos.z) * (_FlowGridX * _FlowGridY) + floor(GridPos.y) * _FlowGridX + floor(GridPos.x));
 
 		SFlowData flowData = rw_FlowDataBuffer.flowData[GridID];
 
 		addv = vec4(0.0, 0.0, 1.0, 0.0);
+		addv.yz *= rot(flowData.Angle.x);
 		addv.xz *= rot(flowData.Angle.y);
 
 		trailData.TargetPos = pos + addv * _StepLength;
@@ -112,7 +114,7 @@ void main()
 	pos.xyz += v.xyz * _StepSpeed;
 
 	// 壁に当たっているのなら範囲内のランダムな位置に再配置する
-	if(IsWall || length(pos.xyz) <= 10.0)
+	if(IsWall)
 	{
 		//float Shrink = 0.75;
 		float Shrink = 1.0;

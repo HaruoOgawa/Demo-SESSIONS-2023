@@ -18,47 +18,90 @@ layout(std430,binding=3) buffer destBoxDataBuffer
 } outBoxDataBuffer;
 
 uniform float _time;
-uniform float _InitSY;
-uniform float _Atten;
 
-#define rot(a) mat2(cos(a),-sin(a),sin(a),cos(a))
-#define PI 3.14159265
-
-float rand(vec2 seeds){
-  return fract(sin(dot(seeds, vec2(12.9898,78.233))) * 43758.5453);
+float hash(vec3 p)
+{
+    p=50.0*fract( p*0.3183099 + vec3(0.71,0.113,0.419));
+    return -1.0+2.0*fract( p.x*p.y*p.z*(p.x+p.y+p.z) );
 }
 
-vec2 random2(vec2 seeds)
+vec4 noised(in vec3 x)
 {
- seeds = vec2(dot(seeds, vec2(127.1, 311.7)),
- dot(seeds, vec2(269.5, 183.3)));
- return fract(sin(seeds) * 43758.5453123);
+    vec3 p=floor(x);
+    vec3 w=fract(x);
+    
+    vec3 u=w*w*w*(w*(w*6.0-15.0)+10.0);
+    vec3 du=30.0*w*w*(w*(w-2.0)+1.0);
+    
+    float a = hash( p+vec3(0,0,0) );
+    float b = hash( p+vec3(1,0,0) );
+    float c = hash( p+vec3(0,1,0) );
+    float d = hash( p+vec3(1,1,0) );
+    float e = hash( p+vec3(0,0,1) );
+    float f = hash( p+vec3(1,0,1) );
+    float g = hash( p+vec3(0,1,1) );
+    float h = hash( p+vec3(1,1,1) );
+    
+    float k0 = a;
+    float k1 = b-a;
+    float k2 = c-a;
+    float k3 = e-a;
+    float k4 = a-b-c+d;
+    float k5 = a-c-e+g;
+    float k6 = a-b-e+f;
+    float k7 =-a+b+c-d+e-f-g+h;
+    
+    return vec4( -1.0+2.0*(k0 + k1*u.x + k2*u.y + k3*u.z + k4*u.x*u.y + k5*u.y*u.z + k6*u.z*u.x + k7*u.x*u.y*u.z),
+                 2.0* du * vec3( k1 + k4*u.y + k6*u.z + k7*u.y*u.z,
+                                 k2 + k5*u.z + k4*u.x + k7*u.z*u.x,
+                                 k3 + k6*u.x + k5*u.y + k7*u.x*u.y ) );
 }
 
-float perlinNoise(vec2 seeds)
+float plane(vec3 p,vec4 n)
 {
-	vec2 i = floor(seeds);
-	vec2 f = fract(seeds);
-	vec2 i00 = i + vec2(0, 0);
-	vec2 i10 = i + vec2(1, 0);
-	vec2 i01 = i + vec2(0, 1);
-	vec2 i11 = i + vec2(1, 1);
-	vec2 f00 = f - vec2(0, 0);
-	vec2 f10 = f - vec2(1, 0);
-	vec2 f01 = f - vec2(0, 1);
-	vec2 f11 = f - vec2(1, 1);
-	vec2 g00 = normalize(-1.0 + 2.0 * random2(i00));
-	vec2 g10 = normalize(-1.0 + 2.0 * random2(i10));
-	vec2 g01 = normalize(-1.0 + 2.0* random2(i01));
-	vec2 g11 = normalize(-1.0 + 2.0* random2(i11));
-	float v00 = dot(g00, f00);
-	float v10 = dot(g10, f10);
-	float v01 = dot(g01, f01);
-	float v11 = dot(g11, f11);
-	vec2 p = smoothstep(0.0, 1.0, f);
-	float v00v10 = mix(v00, v10, p.x);
-	float v01v11 = mix(v01, v11, p.x);
-	return mix(v00v10, v01v11, p.y) * 0.5 + 0.5;
+    return dot(p,n.xyz)*n.w;
+}
+
+// Moutain Func ////////////////////////////////////////////
+const mat3 m3  = mat3( 0.00,  0.80,  0.60,
+                      -0.80,  0.36, -0.48,
+                      -0.60, -0.48,  0.64 );
+const mat3 m3i = mat3( 0.00, -0.80, -0.60,
+                       0.80,  0.36, -0.48,
+                       0.60, -0.48,  0.64 );
+
+vec4 fbm(in vec3 x,int octaves)
+{
+    float f=1.9;
+    float s=0.55;
+    float a=0.0;
+    float b=0.5;
+    vec3 d=vec3(0.0);
+    mat3 m=mat3(
+        1.0,0.0,0.0,
+        0.0,1.0,0.0,
+        0.0,0.0,1.0
+    );
+    
+    for(int i=0;i<octaves;i++)
+    {
+        vec4 n=noised(x);
+        a+=b*n.x;
+        d+=b*m*n.yzw;
+        b*=s;
+        x=f*m3*x;
+        m=f*m3i*m;
+    }
+    
+    return vec4(a,d);
+}
+
+float MountainMap(vec3 p)
+{
+    float h = fbm(p * 0.05+vec3(vec2(1.0,-2.0),0.0) + _time * 0.1,9).x;
+    h=20.0*abs(h);
+
+    return h;
 }
 
 void main()
@@ -66,12 +109,8 @@ void main()
 	uint DID = gl_GlobalInvocationID.x;
 	SBoxData data = outBoxDataBuffer.data[DID];
 
-	float Scl = data.Scl.y;
-	for(float i = 0.0; i < data.Data.x; i++)
-	{
-		Scl *= _Atten;
-	}
-	Scl = max(Scl, _InitSY);
+	float Scl = MountainMap(vec3(data.Pos.x, 0.0, data.Pos.z));
+
 	data.Scl.y = Scl;
 	data.Pos.y = Scl * 0.5;
 	data.Data.x = 0.0;

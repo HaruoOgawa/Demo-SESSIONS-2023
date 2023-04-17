@@ -45,6 +45,7 @@ void main(){
 	SFlowData flowData = rw_FlowDataBuffer.flowData[id];
 
 	pos.xyz *= _FlowCellSize;
+	pos.yz *= rot(flowData.Angle.x); wn.yz *= rot(flowData.Angle.x);
 	pos.xz *= rot(flowData.Angle.y); wn.xz *= rot(flowData.Angle.y);
 	pos.xyz += flowData.Pos.xyz;
 	

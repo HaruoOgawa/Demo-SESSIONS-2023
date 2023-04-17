@@ -9,8 +9,6 @@ layout(local_size_x = 1024, local_size_y = 1, local_size_z = 1) in;
 uniform float _time;
 uniform float _deltaTime;
 uniform int _SegmentNum;
-uniform float _MaxBoxHeight;
-uniform float _AddedBoxHeight;
 
 //
 struct STrailData
@@ -46,19 +44,6 @@ layout(std430, binding = 1) buffer SegmentDataBuffer
 {
 	SSegmentData segmentData[];
 } rw_SegmentDataBuffer;
-
-struct SBoxData
-{
-    vec4 Pos;
-    vec4 Rot;
-    vec4 Scl;
-    vec4 Data;
-};
-
-layout(std430,binding=3) buffer destBoxDataBuffer
-{
-	SBoxData box[];
-} outBoxDataBuffer;
 
 float Noise(vec2 st)
 {
@@ -118,20 +103,6 @@ void main()
 
 		GridID = Data.GridID4Box;
 	}
-
-	SBoxData box = outBoxDataBuffer.box[GridID];
-	float BoxSY = box.Scl.y;
-	BoxSY += _AddedBoxHeight * min(1.0, exp(-0.0001*length(Data.Pos)));
-	BoxSY += PerlinNoise(Data.Pos.xz * 0.1 + _time) * 2.0;
-
-	if(BoxSY <= _MaxBoxHeight)
-	{
-		box.Scl.y = BoxSY;
-		box.Pos.y = BoxSY * 0.5;
-		box.Data.x += 1.0;
-	}
-
-	outBoxDataBuffer.box[GridID] = box;
 }
 
 )"
