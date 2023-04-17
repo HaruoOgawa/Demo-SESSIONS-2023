@@ -1,7 +1,6 @@
 #include "CTrailObject.h"
 #include "GraphicsEngine/Component/MeshRendererComponent.h"
 #include "GraphicsEngine/Graphics/ComputeBuffer.h"
-#include "CBoxInstancing.h"
 
 namespace app
 {
@@ -231,12 +230,7 @@ namespace app
 		m_SegmentGPGPU->SetBufferToCS(m_SegmentBuffer, 1);
 	}
 
-	void CTrailObject::LinkBoxBufferToSegmentCS(const std::shared_ptr<ComputeBuffer>& CubeGroundBuffer)
-	{
-		m_SegmentGPGPU->SetBufferToCS(CubeGroundBuffer, 3);
-	}
-
-	void CTrailObject::Update(const std::shared_ptr<CBoxInstancing>& BoxInstancing)
+	void CTrailObject::Update()
 	{
 		// シードを更新
 		float t = GraphicsMain::GetInstance()->m_SecondsTime;
@@ -275,8 +269,6 @@ namespace app
 		m_SegmentGPGPU->SetFloatUniform("_time", t);
 		m_SegmentGPGPU->SetFloatUniform("_deltaTime", GraphicsMain::GetInstance()->m_DeltaTime);
 		m_SegmentGPGPU->SetIntUniform("_SegmentNum", m_TrailSegmentNum);
-		m_SegmentGPGPU->SetFloatUniform("_MaxBoxHeight", BoxInstancing->GetMaxBoxHeight());
-		m_SegmentGPGPU->SetFloatUniform("_AddedBoxHeight", BoxInstancing->GetAddedBoxHeight());
 		m_SegmentGPGPU->Dispatch(m_DomainCount * m_TrailNumPerDomain * m_TrailSegmentNum / m_ThreadNum.x, 1, 1);
 	}
 	void CTrailObject::Draw()

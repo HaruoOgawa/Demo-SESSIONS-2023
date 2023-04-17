@@ -40,10 +40,6 @@ namespace app
         void Draw();
         void UpdateTimeline(float SceneTime);
 
-        std::shared_ptr<ComputeBuffer> GetCubeGroundBuffer() { return m_cubeGroundBuffer; }
-        float GetMaxBoxHeight()const { return m_MaxBoxHeight; }
-        float GetAddedBoxHeight()const { return m_AddedBoxHeight; }
-
         float rand(glm::vec2 seeds) {
             return glm::fract(glm::sin(glm::dot(seeds, glm::vec2(12.9898f, 78.233f))) * 43758.5453f);
         }

@@ -9,8 +9,6 @@ class Material;
 
 namespace app
 {
-	class CBoxInstancing;
-
 	struct SFlowData
 	{
 		float Pos[4]; // pos.x, pos.y, pos.z, 0.0
@@ -95,10 +93,9 @@ namespace app
 		virtual ~CTrailObject();
 
 		void Init();
-		void Update(const std::shared_ptr<CBoxInstancing>& BoxInstancing);
+		void Update();
 		void Draw();
 
 		const glm::vec4& GetWallHalfSize() const { return m_WallHalfSize; }
-		void LinkBoxBufferToSegmentCS(const std::shared_ptr<ComputeBuffer>& CubeGroundBuffer);
 	};
 }

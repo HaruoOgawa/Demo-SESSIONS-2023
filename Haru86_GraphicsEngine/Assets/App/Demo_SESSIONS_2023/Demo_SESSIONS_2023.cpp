@@ -25,9 +25,6 @@ namespace app
         m_BoxInstancing = std::make_shared<CBoxInstancing>();
         m_TrailObject = std::make_shared<CTrailObject>();
 
-        // BoxのバッファをTrailObjectのCSと結びつける
-        m_TrailObject->LinkBoxBufferToSegmentCS(m_BoxInstancing->GetCubeGroundBuffer());
-        
 #ifdef _DEBUG
         //GraphicsMain::GetInstance()->m_ShowDebugLog = true;
 
@@ -55,13 +52,13 @@ namespace app
         GraphicsMain::GetInstance()->m_DirectionalLightDir = glm::normalize(glm::vec3(1.0f, 0.5f, 1.0f));
 
         // Camera
-        float time = GraphicsMain::GetInstance()->m_SecondsTime * 0.1f, r = 60.0f;
+        float time = GraphicsMain::GetInstance()->m_SecondsTime * 0.1f, r = 100.0f;
         //time = 0.0f;
         GraphicsMain::GetInstance()->m_MainCamera->m_position = glm::vec3(r * glm::cos(time), r, r * glm::sin(time));
 
         // Obj
         m_BoxInstancing->Update(time);
-        m_TrailObject->Update(m_BoxInstancing);
+        m_TrailObject->Update();
 
         //
 #ifndef _DEBUG

@@ -76,19 +76,14 @@ namespace app
 	}
 
 	void CBoxInstancing::Update(float SceneTime) {
-		//
 		auto& mat = m_GPGPU->m_material;
 		mat->SetActive();
 		mat->SetFloatUniform("_time", SceneTime);
-		mat->SetFloatUniform("_InitSY", m_InitSY);
-		mat->SetFloatUniform("_Atten", m_Atten);
 		mat->Dispatch(m_CubeNum / m_CubeThreads.x, 1, 1);
 	}
 
 	void CBoxInstancing::Draw() {
 		m_CubeMountain->Draw([&]() {
-			m_CubeMountain->m_material->SetFloatUniform("_Roughness", 0.5);
-			m_CubeMountain->m_material->SetFloatUniform("_FresnelReflectance", 1.0);
 			m_CubeMountain->m_material->SetFloatUniform("_MaxBoxHeight", m_MaxBoxHeight);
 			}, GL_TRIANGLES, true, m_CubeNum);
 	}

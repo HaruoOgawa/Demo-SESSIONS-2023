@@ -3,8 +3,6 @@ R"(
 
 uniform vec3 _WorldCameraPos;
 uniform vec3 _LightDir;
-uniform float _Roughness;
-uniform float _FresnelReflectance;
 
 in vec3 worldPosition;
 in vec3 worldNormal;
