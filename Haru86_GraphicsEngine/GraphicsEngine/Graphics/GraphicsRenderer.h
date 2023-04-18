@@ -30,12 +30,7 @@ class GraphicsRenderer
 	//FrameBuffer
 	unsigned int polygon_frameBuffer;
 	unsigned int polygon_frameBuffer_MSAA;
-	unsigned int raymarching_frameBuffer;
-	unsigned int p_r_BlendingBuffer;
 	unsigned int p_r_DepthBlendingBuffer;
-	//PostProcess FrameBuffer
-	unsigned int m_PolygonPostProcess_FrameBuffer;
-	unsigned int m_LatePostProcess_FrameBuffer;
 
 	// îwåiêF
 	glm::vec4 m_BackgroudColor;
@@ -70,13 +65,7 @@ public:
 
 	//FrameTextures
 	std::shared_ptr<Texture> polygon_frameTexture;
-	std::shared_ptr<Texture> polygon_ShadowTexture;
-	std::shared_ptr<Texture> raymarching_frameTexture;
-	std::shared_ptr<Texture> p_r_BlendingTexture;
 	std::shared_ptr<Texture> p_r_DepthBlendingTexture;
-	//PostProcess FrameTexture
-	std::shared_ptr<Texture> m_PolygonPostProcess_FrameTexture;
-	std::shared_ptr<Texture> m_LatePostProcess_FrameTexture;
 
 	// îwåiêF
 	void SetBackgroudColor(glm::vec4 BackgroudColor);

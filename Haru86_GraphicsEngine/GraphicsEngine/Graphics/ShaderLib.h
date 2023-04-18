@@ -33,4 +33,8 @@ namespace shaderlib {
 	const std::string BloomResult_frag = {
 		#include "GraphicsEngine/Graphics/Shader/BloomResult.frag"
 	};
+
+	const std::string Depth_Frag = {
+		#include "GraphicsEngine/Graphics/Shader/Depth.frag"
+	};
 }

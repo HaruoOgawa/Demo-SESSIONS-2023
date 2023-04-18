@@ -29,8 +29,8 @@ Material::Material(RenderingSurfaceType SurfaceType,const std::string& vert, con
 		if (SurfaceType == RenderingSurfaceType::RASTERIZER) {
 			LoadShader(vert, frag, geom, tc, tv, cs, shaderPrg
 				, vertShaderData, fragShaderData, geometryShaderData, tessControlShaderData, tessEvalShaderData, computeShaderData);
-			//LoadShader(vert, shaderlib::DepthColor_frag, geom, tc, tv, cs, depthShaderPrg
-				//, depthVertShaderData, depthFragShaderData, depthGeometryShaderData, depthTessControlShaderData, depthTessEvalShaderData, computeShaderDepthData);
+			LoadShader(vert, shaderlib::Depth_Frag, geom, tc, tv, cs, depthShaderPrg
+				, depthVertShaderData, depthFragShaderData, depthGeometryShaderData, depthTessControlShaderData, depthTessEvalShaderData, computeShaderDepthData);
 		}
 		else if (SurfaceType == RenderingSurfaceType::RAYMARCHING) {
 			LoadShader(vert, frag, geom, tc, tv, cs, shaderPrg
