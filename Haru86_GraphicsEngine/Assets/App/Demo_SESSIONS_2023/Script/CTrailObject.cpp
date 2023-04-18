@@ -33,7 +33,7 @@ namespace app
 		m_Seed(glm::vec4(glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f))),
 		
 		m_DomainCount(2),
-		m_TrailNumPerDomain(1024),
+		m_TrailNumPerDomain(512),
 		m_TrailSegmentNum(256),
 		m_StepLength(1.0f),
 		m_StepSpeed(1.0f),
@@ -157,6 +157,7 @@ namespace app
 			for (int t = 0; t < m_TrailNumPerDomain; t++)
 			{
 				float id = static_cast<float>(m_TrailNumPerDomain * d + t);
+				//float id = static_cast<float>(m_TrailNumPerDomain * d);
 				glm::vec4 pos = glm::vec4(
 					m_WallHalfSize.x * (Noise(glm::vec2(id, 0.741f)) * 2.0f - 1.0f),
 					m_WallHalfSize.y * (Noise(glm::vec2(id, 942.0f)) * 2.0f - 1.0f),
@@ -175,7 +176,7 @@ namespace app
 					{col.x, col.y, col.z, col.w},
 					{vel.x, vel.y, vel.z, vel.w},
 					{pos.x, pos.y, pos.z, pos.w},
-					{0.0f, 0.0f, 0.0f, 0.0f}
+					{0.0f, 0.0f, static_cast<float>(d), 0.0f}
 				};
 
 				InitTrailDataList.push_back(data);
@@ -268,6 +269,7 @@ namespace app
 		m_TrailGPGPU->SetFloatUniform("_FlowGridZ", m_FlowGridZ);
 		m_TrailGPGPU->SetFloatUniform("_StepLength", m_StepLength);
 		m_TrailGPGPU->SetFloatUniform("_StepSpeed", m_StepSpeed);
+		m_TrailGPGPU->SetFloatUniform("_nPd", static_cast<float>(m_TrailNumPerDomain));
 		m_TrailGPGPU->Dispatch(m_DomainCount * m_TrailNumPerDomain / m_ThreadNum.x, 1, 1);
 		
 		// Segment

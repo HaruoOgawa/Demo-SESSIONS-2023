@@ -2,7 +2,7 @@ R"(
 #version 430
 
 // thread
-layout(local_size_x = 1024, local_size_y = 1, local_size_z = 1) in;
+layout(local_size_x = 512, local_size_y = 1, local_size_z = 1) in;
 
 // Uniform 
 uniform float _time;
@@ -13,6 +13,7 @@ uniform float _FlowGridY;
 uniform float _FlowGridZ;
 uniform float _StepLength;
 uniform float _StepSpeed;
+uniform float _nPd;
 
 //
 struct SFlowData
@@ -71,16 +72,19 @@ vec3 hsv2rgb2(vec3 c, float k) {
 
 void main()
 {
-	uint DID = gl_GlobalInvocationID.x;
+	int DID = int(gl_GlobalInvocationID.x);
 
-	//
-	STrailData trailData = rw_TrailDataBuffer.trailData[DID];
+	STrailData baseTrailData = rw_TrailDataBuffer.trailData[DID];
+	int bID = DID;
+	// int bID = int(baseTrailData.Data.z * _nPd);
+
+	STrailData trailData = rw_TrailDataBuffer.trailData[bID];
+	
 	vec4 v = trailData.Velocity;
 	vec4 pos = trailData.Pos;
 	
 	//
 	vec4 addv = vec4(0.0);
-	vec4 Data = vec4(0.0);
 
 	// 更新する
 	if(length(trailData.TargetPos.xyz - pos.xyz) < 1e-3)
@@ -99,8 +103,6 @@ void main()
 		trailData.TargetPos = pos + addv * _StepLength;
 		
 		v.xyz = addv.xyz * _StepLength;
-
-		Data.y = float(GridID);
 	}
 
 	// 速度ベクトルを更新
@@ -114,21 +116,22 @@ void main()
 	pos.xyz += v.xyz * _StepSpeed;
 
 	// 壁に当たっているのなら範囲内のランダムな位置に再配置する
+	float CollData = 0.0;
 	if(IsWall)
 	{
 		//float Shrink = 0.75;
 		float Shrink = 1.0;
 
 		pos = vec4(
-			Shrink * _WallHalfSize.x * (Noise(vec2(DID, 0.741 + _time)) * 2.0 - 1.0),
-			Shrink * _WallHalfSize.y * (Noise(vec2(DID, 942.0 + _time)) * 2.0 - 1.0),
-			Shrink * _WallHalfSize.z * (Noise(vec2(DID, 77.7 + _time)) * 2.0 - 1.0),
+			Shrink * _WallHalfSize.x * (Noise(vec2(bID, 0.741 + _time)) * 2.0 - 1.0),
+			Shrink * _WallHalfSize.y * (Noise(vec2(bID, 942.0 + _time)) * 2.0 - 1.0),
+			Shrink * _WallHalfSize.z * (Noise(vec2(bID, 77.7 + _time)) * 2.0 - 1.0),
 			1.0f
 		);
 
 		trailData.TargetPos = pos;
 
-		Data.x = 1.0;
+		CollData = 1.0;
 	}
 
 	// 速度ベクトルの向きから回転を取得
@@ -138,14 +141,15 @@ void main()
 
 	//
 	vec3 vc = normalize(v.xyz) * 0.5 + 0.5;
-	vec4 col = mix(vec4(vc, 1.0), vec4(hsv2rgb2(vec3( (vc.x+vc.y+vc.z)*0.33333 , 1.0, 1.0), 1.2), 1.0), Noise(vec2(float(DID), float(DID) * 10.0)) ) * 1.5;
+	vec4 col = mix(vec4(vc, 1.0), vec4(hsv2rgb2(vec3( (vc.x+vc.y+vc.z)*0.33333 , 1.0, 1.0), 1.2), 1.0), Noise(vec2(float(bID), float(bID) * 10.0)) ) * 2.0;
+	col.rgb *= exp(-0.0001 * length(pos.xz * 100.0));
 
 	//
 	trailData.Pos =  pos;
 	trailData.Velocity = v;
 	trailData.Color = col;
 	trailData.Rotate = vec4(rotate, 1.0);
-	trailData.Data = Data;
+	trailData.Data.x = CollData;
 
 	rw_TrailDataBuffer.trailData[DID] = trailData;
 }
