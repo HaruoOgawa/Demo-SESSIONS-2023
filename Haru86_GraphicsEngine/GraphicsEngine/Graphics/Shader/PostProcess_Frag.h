@@ -8,6 +8,8 @@ uniform vec2 _resolution;
 uniform float _frameResolusion;
 uniform sampler2D _SrcTexture;
 uniform sampler2D _DepthMap;
+uniform float _Offset;
+uniform float _Power;
 
 void main(){
 	//
@@ -20,7 +22,7 @@ void main(){
 	float PI = 2.0 * 3.14159265;
 	float Directions = 16.0;
 	float Quality = 3.0;
-	float Size = 8.0 * depth;
+	float Size = 8.0 * depth * _Power + _Offset;
 	vec2 Radius = Size / _resolution;
 
 	for (float d = 0.0; d < PI; d += PI / Directions)

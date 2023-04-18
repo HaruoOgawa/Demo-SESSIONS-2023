@@ -38,7 +38,7 @@ namespace app
         CBoxInstancing();
         ~CBoxInstancing();
         void Start();
-        void Update(float SceneTime);
+        void Update();
         void Draw();
         void UpdateTimeline(float SceneTime);
 

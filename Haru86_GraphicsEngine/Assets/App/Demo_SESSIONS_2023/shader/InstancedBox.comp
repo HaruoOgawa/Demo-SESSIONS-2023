@@ -99,7 +99,7 @@ vec4 fbm(in vec3 x,int octaves)
 
 float MountainMap(vec3 p)
 {
-    float h = fbm(p * 0.05+vec3(vec2(1.0,-2.0),0.0) + _time * 0.1,9).x;
+    float h = fbm(p * 0.05+vec3(vec2(1.0,-2.0),0.0) + _time * 0.01,9).x;
     h=20.0*abs(h);
 
     return h;

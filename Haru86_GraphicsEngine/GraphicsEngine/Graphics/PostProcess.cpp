@@ -29,9 +29,9 @@ void PostProcess::DestroyInstance() {
 }
 
 PostProcess::PostProcess():
-	m_UsePostProcess(false),
-	m_UseBloom(false),
-	m_BloomIntensity(0.0),
+	m_BloomIntensity(0.0f),
+	m_DoFOffset(0.0f),
+	m_DoFPower(1.0f),
 	m_Bloom(std::make_unique<CBloom>()),
 	m_BloomTexture(std::make_shared<Texture>()),
 	m_PostProcesCallBack([]() {})
@@ -52,7 +52,7 @@ PostProcess::PostProcess():
 
 void PostProcess::DrawPostProcess(const std::shared_ptr<Texture>& SrcTexture, const unsigned int& DestBuffer)const {
 	// Draw Bloom
-	if (m_UseBloom) m_Bloom->Draw(SrcTexture, m_BloomFrameBuffer);
+	m_Bloom->Draw(SrcTexture, m_BloomFrameBuffer);
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, DestBuffer);
 	glViewport(0, 0, static_cast<int>(GraphicsRenderer::GetInstance()->GetScreenSize().x), static_cast<int>(GraphicsRenderer::GetInstance()->GetScreenSize().y));
@@ -62,28 +62,17 @@ void PostProcess::DrawPostProcess(const std::shared_ptr<Texture>& SrcTexture, co
 
 	m_MeshRenderer->Draw([&]() {
 		m_PostProcesCallBack();
-		if (m_UseBloom)
-		{
-			m_BloomTexture->SetActive(GL_TEXTURE0);
-		}
-		else
-		{
-			SrcTexture->SetActive(GL_TEXTURE0);
-		}
+
+		m_BloomTexture->SetActive(GL_TEXTURE0);
 		m_MeshRenderer->m_material->SetTexUniform("_SrcTexture", 0);
 
 		GraphicsRenderer::GetInstance()->p_r_DepthBlendingTexture->SetActive(GL_TEXTURE1);
 		m_MeshRenderer->m_material->SetTexUniform("_DepthMap", 1);
 	
+		m_MeshRenderer->m_material->SetFloatUniform("_Offset", m_DoFOffset);
+		m_MeshRenderer->m_material->SetFloatUniform("_Power", m_DoFPower);
 	}, GL_TRIANGLES, false, 0);
-	if (m_UseBloom)
-	{
-		m_BloomTexture->SetEnactive(GL_TEXTURE0);
-	}
-	else
-	{
-		SrcTexture->SetEnactive(GL_TEXTURE0);
-	}
 
+	m_BloomTexture->SetEnactive(GL_TEXTURE0);
 	GraphicsRenderer::GetInstance()->p_r_DepthBlendingTexture->SetEnactive(GL_TEXTURE1);
 }

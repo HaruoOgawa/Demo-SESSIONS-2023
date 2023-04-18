@@ -14,9 +14,6 @@ namespace shaderlib {
 		#include "GraphicsEngine/Graphics/Shader/StandardRenderBoard_VertComp.h"
 	});
 
-	/*const std::string PostProcess_frag = std::string({
-		#include "GraphicsEngine/Graphics/Shader/PostProcess_Frag.h"
-	});*/
 	const std::string PostProcess_frag = std::string({
 		#include "GraphicsEngine/Graphics/Shader/PostProcess_FragComp.h"
 	});

@@ -76,10 +76,12 @@ namespace app
 		m_CubeMountain->m_material->SetBufferToMat(m_cubeGroundBuffer, 3);
 	}
 
-	void CBoxInstancing::Update(float SceneTime) {
+	void CBoxInstancing::Update() {
+		float time = GraphicsMain::GetInstance()->m_SecondsTime;
+
 		auto& mat = m_GPGPU->m_material;
 		mat->SetActive();
-		mat->SetFloatUniform("_time", SceneTime);
+		mat->SetFloatUniform("_time", time);
 		mat->SetFloatUniform("_CommonYO", m_CommonYOffset);
 		mat->Dispatch(m_CubeNum / m_CubeThreads.x, 1, 1);
 	}
