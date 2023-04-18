@@ -88,9 +88,9 @@ void main()
 		FBM(_Seed.zw + DomainID / vec2(float(_FlowGridX), float(_FlowGridZ)) * _NoiseScale.x, _NoiseOctaves.x) + _NoiseOffset.x
 	);*/
 
-	float angleX = pi * 2.0 * _AngleScale.x * (
+	float angleX = _AngleScale.x * (pi * 2.0 *  (
 		FBM(_Seed.xy + vec2(float(DID.x), float(DID.y)) / vec2(float(_FlowGridX), float(_FlowGridY)) * _NoiseScale.x, _NoiseOctaves.x) + _NoiseOffset.x
-	);
+	) - pi);
 
 	float angleY = pi * 2.0 * _AngleScale.y * (
 		FBM(_Seed.zw + vec2(float(DID.y), float(DID.z)) / vec2(float(_FlowGridY), float(_FlowGridZ)) * _NoiseScale.y, _NoiseOctaves.y) + _NoiseOffset.y

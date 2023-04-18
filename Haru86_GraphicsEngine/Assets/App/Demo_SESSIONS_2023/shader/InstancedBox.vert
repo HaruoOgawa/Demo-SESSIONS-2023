@@ -8,6 +8,7 @@ uniform mat4 PMatrix;
 uniform float _time;
 uniform float _deltaTime;
 uniform float _MaxBoxHeight;
+uniform float _SideCubeNum;
 
 layout(location=0)in vec3 vertex;
 layout(location=1)in vec3 normal;
@@ -43,11 +44,6 @@ vec3 hsv2rgb(vec3 c)
     return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
 }
 
-vec3 hsv2rgb2(vec3 c, float k) {
-    return smoothstep(0. + k, 1. - k,
-        .5 + .5 * cos((vec3(c.x, c.x, c.x) + vec3(3., 2., 1.) / 3.) * radians(360.)));
-}
-
 void main(){
 	SBoxData data = outBoxDataBuffer.data[gl_InstanceID];
 
@@ -68,7 +64,7 @@ void main(){
 	id=float(gl_InstanceID);
 
 	float rate = data.Scl.y/_MaxBoxHeight;
-	float l = 1.0 - clamp(length(pos.xz) / (512.0 * 0.5), 0.0, 1.0);
+	float l = 1.0 - clamp(length(pos.xz) / (_SideCubeNum * 0.5), 0.0, 1.0);
 	randColor=hsv2rgb(vec3(mod(rate + _time*0.1, 1.0), 1.0 - rate, l)) * 2.0;
 
 	uv=texcoord;

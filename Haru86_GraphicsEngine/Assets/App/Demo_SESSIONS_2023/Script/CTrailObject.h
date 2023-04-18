@@ -23,7 +23,7 @@ namespace app
 		float m_Color[4];
 		float m_Velocity[4];
 		float m_TargetPos[4];
-		float m_Data[4]; // IsRelocation, GridID4Box, none, none
+		float m_Data[4]; // IsRelocation, GridID4Box, DomainID, none
 	};
 
 	// 今回はセグメントの順番は固定で単純にひとつ前のセグメントの位置を参照する形にしてみる

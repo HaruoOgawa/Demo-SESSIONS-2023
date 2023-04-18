@@ -29,6 +29,8 @@ namespace app
         float m_AddedBoxHeight;
         float m_Atten;
 
+        float m_CommonYOffset;
+
         std::shared_ptr<MeshRendererComponent> m_CubeMountain;
         std::shared_ptr<MeshRendererComponent> m_GPGPU;
         std::shared_ptr<ComputeBuffer> m_cubeGroundBuffer;

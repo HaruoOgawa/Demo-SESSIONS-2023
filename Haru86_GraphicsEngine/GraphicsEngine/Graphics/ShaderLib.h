@@ -14,6 +14,9 @@ namespace shaderlib {
 		#include "GraphicsEngine/Graphics/Shader/StandardRenderBoard_VertComp.h"
 	});
 
+	/*const std::string PostProcess_frag = std::string({
+		#include "GraphicsEngine/Graphics/Shader/PostProcess_Frag.h"
+	});*/
 	const std::string PostProcess_frag = std::string({
 		#include "GraphicsEngine/Graphics/Shader/PostProcess_FragComp.h"
 	});
@@ -32,5 +35,9 @@ namespace shaderlib {
 
 	const std::string BloomResult_frag = {
 		#include "GraphicsEngine/Graphics/Shader/BloomResult.frag"
+	};
+
+	const std::string Depth_Frag = {
+		#include "GraphicsEngine/Graphics/Shader/Depth.frag"
 	};
 }

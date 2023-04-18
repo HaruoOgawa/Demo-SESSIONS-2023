@@ -71,6 +71,9 @@ void PostProcess::DrawPostProcess(const std::shared_ptr<Texture>& SrcTexture, co
 			SrcTexture->SetActive(GL_TEXTURE0);
 		}
 		m_MeshRenderer->m_material->SetTexUniform("_SrcTexture", 0);
+
+		GraphicsRenderer::GetInstance()->p_r_DepthBlendingTexture->SetActive(GL_TEXTURE1);
+		m_MeshRenderer->m_material->SetTexUniform("_DepthMap", 1);
 	
 	}, GL_TRIANGLES, false, 0);
 	if (m_UseBloom)
@@ -81,4 +84,6 @@ void PostProcess::DrawPostProcess(const std::shared_ptr<Texture>& SrcTexture, co
 	{
 		SrcTexture->SetEnactive(GL_TEXTURE0);
 	}
+
+	GraphicsRenderer::GetInstance()->p_r_DepthBlendingTexture->SetEnactive(GL_TEXTURE1);
 }
