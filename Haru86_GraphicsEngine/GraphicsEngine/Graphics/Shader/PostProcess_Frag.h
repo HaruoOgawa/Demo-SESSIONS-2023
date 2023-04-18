@@ -20,7 +20,7 @@ void main(){
 	float PI = 2.0 * 3.14159265;
 	float Directions = 16.0;
 	float Quality = 3.0;
-	float Size = 4.0 + 16.0 * depth;
+	float Size = 8.0 * depth;
 	vec2 Radius = Size / _resolution;
 
 	for (float d = 0.0; d < PI; d += PI / Directions)
@@ -32,6 +32,8 @@ void main(){
 	}
 
 	col /= Quality * Directions - 15.0;
+
+	//col = vec3(depth);
 
 	gl_FragColor=vec4(col,1.0);
 }

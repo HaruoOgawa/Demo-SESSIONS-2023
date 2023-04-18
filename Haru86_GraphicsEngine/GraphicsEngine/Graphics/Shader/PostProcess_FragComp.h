@@ -13,7 +13,7 @@
  "{"
    "vec2 f=uv*_frameResolusion;"
    "vec3 u=texture(_SrcTexture,f).xyz;"
-   "float n=texture(_DepthMap,f).x,t=6.2831853,r=16.,v=3.,s=4.+16.*n;"
+   "float n=texture(_DepthMap,f).x,t=6.2831853,r=16.,v=3.,s=8.*n;"
    "vec2 m=s/_resolution;"
    "for(float c=0.;c<t;c+=t/r)"
      "for(float g=1./v;g<=1.;g+=1./v)"

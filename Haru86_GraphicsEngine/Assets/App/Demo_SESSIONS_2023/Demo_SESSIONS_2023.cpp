@@ -52,7 +52,7 @@ namespace app
         GraphicsMain::GetInstance()->m_DirectionalLightDir = glm::normalize(glm::vec3(1.0f, 0.5f, 1.0f));
 
         // Camera
-        float time = GraphicsMain::GetInstance()->m_SecondsTime * 0.1f, r = 100.0f;
+        float time = GraphicsMain::GetInstance()->m_SecondsTime * 0.1f, r = 60.0f;
         //time = 0.0f;
         GraphicsMain::GetInstance()->m_MainCamera->m_position = glm::vec3(r * glm::cos(time), r, r * glm::sin(time));
 
