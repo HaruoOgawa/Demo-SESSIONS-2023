@@ -33,7 +33,7 @@ namespace app
         PostProcess::GetInstance()->m_BloomThreshold = 0.5f;
 
 #ifdef _DEBUG
-        GraphicsMain::GetInstance()->m_ShowDebugLog = true;
+        //GraphicsMain::GetInstance()->m_ShowDebugLog = true;
 
         // 時間のオフセット
         //GraphicsMain::GetInstance()->m_SecondsTimeOffset = 32.0f;// シーンを飛ばすためのオフセット

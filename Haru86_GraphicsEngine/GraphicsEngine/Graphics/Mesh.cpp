@@ -29,12 +29,11 @@ void Mesh::CreateMesh(PrimitiveType primType) {
 	case PrimitiveType::CUBE:
 		Primitive::CreateCube(&VertexData, &Dimention, &Indices);
 		break;
-	case PrimitiveType::CIRCLE:
-		Primitive::CreateCircle(&VertexData, &Dimention, &Indices);
-		break;
+#ifdef _DEBUG
 	case PrimitiveType::ARROW:
 		Primitive::CreateArrow(&VertexData, &Dimention, &Indices);
 		break;
+#endif // _DEBUG
 	default:
 		Primitive::CreateBoard(&VertexData, &Dimention, &Indices);
 		break;

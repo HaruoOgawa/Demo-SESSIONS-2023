@@ -19,22 +19,18 @@ namespace shaderlib {
 	});
 
 	const std::string BloomBlur_frag = {
-		#include "GraphicsEngine/Graphics/Shader/BloomBlur.frag"
-	};
-
-	const std::string BloomDemo_frag = {
-		#include "GraphicsEngine/Graphics/Shader/BloomDemo.frag"
+		#include "GraphicsEngine/Graphics/Shader/BloomBlur_FragComp.h"
 	};
 
 	const std::string BloomIlluminance_frag = {
-		#include "GraphicsEngine/Graphics/Shader/BloomIlluminance.frag"
+		#include "GraphicsEngine/Graphics/Shader/BloomIlluminance_FragComp.h"
 	};
 
 	const std::string BloomResult_frag = {
-		#include "GraphicsEngine/Graphics/Shader/BloomResult.frag"
+		#include "GraphicsEngine/Graphics/Shader/BloomResult_FragComp.h"
 	};
 
 	const std::string Depth_Frag = {
-		#include "GraphicsEngine/Graphics/Shader/Depth.frag"
+		#include "GraphicsEngine/Graphics/Shader/Depth_FragComp.h"
 	};
 }

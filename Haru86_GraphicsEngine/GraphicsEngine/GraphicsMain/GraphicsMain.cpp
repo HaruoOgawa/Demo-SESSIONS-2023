@@ -90,11 +90,11 @@ void GraphicsMain::LoadData() {
 	m_LoadingWaitTime = static_cast<float>(clock()) - AdjustAppLoadWatitTime;
 
 	//
-	if (m_SecondsTimeOffset != 0.0f && m_SecondsTimeOffset > 0.0f)
+	/*if (m_SecondsTimeOffset != 0.0f && m_SecondsTimeOffset > 0.0f)
 	{
 		m_SoundPlayer->Skip(m_SecondsTimeOffset);
 	}
-	else
+	else*/
 	{
 		m_SoundPlayer->Play();
 	}

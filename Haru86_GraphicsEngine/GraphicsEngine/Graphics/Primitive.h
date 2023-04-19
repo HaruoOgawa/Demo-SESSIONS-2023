@@ -16,9 +16,9 @@ public:
 	static void CreateBoard(std::vector<std::vector<float>>* vertices, std::vector<int>* dimention, std::vector<unsigned short>* indices);
 	static void CreatePoint(std::vector<std::vector<float>>* vertices, std::vector<int>* dimention, std::vector<unsigned short>* indices);
 	static void CreateCube(std::vector<std::vector<float>>* vertices, std::vector<int>* dimention, std::vector<unsigned short>* indices);
-	static void CreateCircle(std::vector<std::vector<float>>* vertices, std::vector<int>* dimention, std::vector<unsigned short>* indices, float row = 32.0f, float rad = 1.0f);
+#ifdef _DEBUG
 	static void CreateArrow(std::vector<std::vector<float>>* vertices, std::vector<int>* dimention, std::vector<unsigned short>* indices);
-
+#endif
 	unsigned int mNumIndices;
 private:
 	unsigned int mVertexArray;

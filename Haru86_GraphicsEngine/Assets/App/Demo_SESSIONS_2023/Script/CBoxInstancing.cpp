@@ -32,13 +32,13 @@ namespace app
 			std::make_shared<TransformComponent>(),
 			PrimitiveType::CUBE,
 			RenderingSurfaceType::RASTERIZER,
-			std::string(
-#include "Assets/App/Demo_SESSIONS_2023/shader/InstancedBox.vert"
-			),
-			std::string(
-#include "Assets/App/Demo_SESSIONS_2023/shader/InstancedBox.frag"
-			)
-			);
+			std::string({
+				#include "Assets/App/Demo_SESSIONS_2023/shader/InstancedBox_VertComp_my.h"	
+			}),
+			std::string({
+				#include "Assets/App/Demo_SESSIONS_2023/shader/InstancedBox_FragComp.h"	
+			})
+		);
 
 		m_GPGPU = std::make_shared<MeshRendererComponent>(
 			std::make_shared<TransformComponent>(),

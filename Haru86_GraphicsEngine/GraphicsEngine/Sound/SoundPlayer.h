@@ -16,8 +16,10 @@ namespace sound
 		bool Play();
 		bool Pause();
 		void Release();
+#ifdef _DEBUG
 		void Skip(float SkipOffset);
 		void Mute(bool IsMute);
+#endif // _DEBUG
 
 	private:
 		std::string GetExeDir(char path[]);

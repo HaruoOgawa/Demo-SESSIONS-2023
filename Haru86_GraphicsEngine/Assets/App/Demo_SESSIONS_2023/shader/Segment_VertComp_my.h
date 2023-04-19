@@ -1,0 +1,32 @@
+// Generated with Shader Minifier 1.3.5 (https://github.com/laurentlb/Shader_Minifier/)
+
+// input
+"#version 430\n"
+"#extension GL_ARB_separate_shader_objects:enable\n"
+"uniform mat4 MVPMatrix,MMatrix,VMatrix,PMatrix;"
+"uniform float _time,_deltaTime;"
+"uniform vec3 _CameraPos;"
+"uniform int _IsMulMatOnVert,_IsMOnly;struct STrailData{vec4 Pos;vec4 Rotate;vec4 Scale;vec4 Color;vec4 Velocity;vec4 TargetPos;vec4 Data;};struct SSegmentData{vec4 Pos;vec4 Rotate;vec4 Scale;vec4 Color;int TrailIndex;int SegmentIndex;int GridID4Box;int Padding1;};"
+"layout(std430, binding = 0) buffer TrailDataBuffer { STrailData trailData[]; } rw_TrailDataBuffer;"
+"layout(std430, binding = 1) buffer SegmentDataBuffer { SSegmentData segmentData[]; } rw_SegmentDataBuffer;"
+"layout(location=0) in vec3 vertex;"
+"layout(location=1) in vec3 normal;"
+"layout(location=2) in vec2 texcoord;"
+"layout(location=0) out vec2 out_uv;"
+"layout(location=1) out vec4 out_WorldVertexPos;"
+"layout(location=2) out vec4 out_WorldNormal;"
+"layout(location=3) flat out int out_gl_InstanceID;"
+"layout(location=4) out vec4 out_Color;\n"
+"#define rot(a)mat2(cos(a),-sin(a),sin(a),cos(a))\n"
+"void main()"
+"{"
+"vec4 v=vec4(vertex,1);"
+"int n=gl_InstanceID,_=rw_SegmentDataBuffer.segmentData[n].TrailIndex;"
+"gl_Position=v;"
+"out_uv=texcoord;"
+"out_WorldVertexPos=v;"
+"out_WorldNormal=vec4(normalize(normal),0);"
+"out_gl_InstanceID=n;"
+"out_Color=rw_SegmentDataBuffer.segmentData[n].Color;"
+"}",
+
