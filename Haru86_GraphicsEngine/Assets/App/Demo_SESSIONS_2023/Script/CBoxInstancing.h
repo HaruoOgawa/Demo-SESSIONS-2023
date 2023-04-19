@@ -30,6 +30,7 @@ namespace app
         float m_Atten;
 
         float m_CommonYOffset;
+        
 
         std::shared_ptr<MeshRendererComponent> m_CubeMountain;
         std::shared_ptr<MeshRendererComponent> m_GPGPU;
@@ -45,5 +46,7 @@ namespace app
         float rand(glm::vec2 seeds) {
             return glm::fract(glm::sin(glm::dot(seeds, glm::vec2(12.9898f, 78.233f))) * 43758.5453f);
         }
+
+        float m_Brightness;
     };
 }

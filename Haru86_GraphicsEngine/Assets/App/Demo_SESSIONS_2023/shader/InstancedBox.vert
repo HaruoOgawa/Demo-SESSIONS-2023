@@ -9,6 +9,7 @@ uniform float _time;
 uniform float _deltaTime;
 uniform float _MaxBoxHeight;
 uniform float _SideCubeNum;
+uniform float _Brightness;
 
 layout(location=0)in vec3 vertex;
 layout(location=1)in vec3 normal;
@@ -65,7 +66,7 @@ void main(){
 
 	float rate = data.Scl.y/_MaxBoxHeight;
 	float l = 1.0 - clamp(length(pos.xz) / (_SideCubeNum * 0.5), 0.0, 1.0);
-	randColor=hsv2rgb(vec3(mod(rate + _time*0.1, 1.0), 1.0 - rate, l)) * 2.0;
+	randColor=hsv2rgb(vec3(mod(rate + _time*0.1, 1.0), 1.0 - rate, l)) * _Brightness;
 
 	uv=texcoord;
 }

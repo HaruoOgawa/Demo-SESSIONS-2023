@@ -15,6 +15,7 @@ namespace app
 		m_AddedBoxHeight(1.0f),
 		m_Atten(0.5f),
 		m_CommonYOffset(-25.0f),
+		m_Brightness(2.0f),
 		
 		m_CubeMountain(nullptr),
 		m_GPGPU(nullptr),
@@ -90,6 +91,7 @@ namespace app
 		m_CubeMountain->Draw([&]() {
 			m_CubeMountain->m_material->SetFloatUniform("_MaxBoxHeight", m_MaxBoxHeight);
 			m_CubeMountain->m_material->SetFloatUniform("_SideCubeNum", static_cast<float>(m_SideCubeNum));
+			m_CubeMountain->m_material->SetFloatUniform("_Brightness", m_Brightness);
 			}, GL_TRIANGLES, true, m_CubeNum);
 	}
 

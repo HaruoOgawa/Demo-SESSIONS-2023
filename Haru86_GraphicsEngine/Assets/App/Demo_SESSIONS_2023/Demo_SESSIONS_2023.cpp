@@ -64,13 +64,62 @@ namespace app
 
     void Demo_SESSIONS_2023::UpdateTimeline(float SceneTime)
     {
-        // Camera
-        float time = GraphicsMain::GetInstance()->m_SecondsTime * 0.1f, r = 60.0f;
-        GraphicsMain::GetInstance()->m_MainCamera->m_position = glm::vec3(r * glm::cos(time), r, r * glm::sin(time));
-        
-        if (SceneTime >= 0.0 && SceneTime < 5.0f)
+        if (SceneTime >= 0.0f && SceneTime < 22.0f)
         {
+            float w = 3.333f;
+            float lTime = glm::mod(SceneTime, w * 5.0f);
+            float CamID = glm::floor(lTime / w);
+            float lrate = glm::clamp((lTime - CamID * w) / w, 0.0f, 1.0f);
 
+            {
+                float rate = glm::clamp((SceneTime - 0.0f) / (10.0f - 0.0f), 0.0f, 1.0f);
+                PostProcess::GetInstance()->m_BloomThreshold = 0.5f + (1.0f - rate) * 0.5f;
+                PostProcess::GetInstance()->m_DoFOffset = (1.0f - abs(rate * 2.0f - 1.0f)) * 10.0f;
+                m_BoxInstancing->m_Brightness = rate * 2.0f + (1.0f - abs(rate * 2.0f - 1.0f)) * 3.0f;
+            }
+
+            if (CamID == 0.0f)
+            {
+                float rate = glm::clamp((lTime - 0.0f) / (10.0f - 0.0f), 0.0f, 1.0f);
+                GraphicsMain::GetInstance()->m_MainCamera->m_position = glm::vec3(0.0f, 15.0f, 30.0f + rate * 20.0f);
+            }
+            else if (CamID == 1.0f)
+            {   
+                GraphicsMain::GetInstance()->m_MainCamera->m_position = glm::vec3(1.0f, 60.0f + lrate * 10.0f, 1.0f);
+            }
+            else if (CamID == 2.0f)
+            {
+                GraphicsMain::GetInstance()->m_MainCamera->m_position = glm::vec3(60.0f * glm::cos(SceneTime * 0.1f), 60.0f, 60.0f * glm::sin(SceneTime * 0.1f));
+            }
+            else if (CamID == 3.0f)
+            {
+                GraphicsMain::GetInstance()->m_MainCamera->m_position = glm::vec3(0.0f, 15.0f, 60.0f + lrate * 20.0f);
+            }
+            else if(CamID == 4.0f)
+            {
+                GraphicsMain::GetInstance()->m_MainCamera->m_position = glm::vec3(100.0f * glm::cos(SceneTime * 0.05f), 100.0f, 100.0f * glm::sin(SceneTime * 0.05f));
+            }
+        }
+        else if (SceneTime >= 22.0f && SceneTime < 65.0f)
+        {
+            m_DrawTrail = true;
+
+            if (SceneTime >= 22.0f < SceneTime < 33.0f)
+            {
+                GraphicsMain::GetInstance()->m_MainCamera->m_position = glm::vec3(60.0f * glm::cos(SceneTime * 0.1f), 60.0f, 60.0f * glm::sin(SceneTime * 0.1f));
+            }
+            else if (SceneTime >= 33.0f < SceneTime < 43.0f)
+            {
+
+            }
+            else if (SceneTime >= 43.0f < SceneTime < 54.0)
+            {
+
+            }
+            else if (SceneTime >= 54.0 < SceneTime < 65.0f)
+            {
+
+            }
         }
         else if (SceneTime >= 65.0f && SceneTime < 66.0f)
         {
@@ -78,16 +127,13 @@ namespace app
             PostProcess::GetInstance()->m_BloomThreshold = 0.5f - rate;
             PostProcess::GetInstance()->m_DoFPower = 1.0f;
             PostProcess::GetInstance()->m_DoFOffset = 12.0f * rate;
+
+            GraphicsMain::GetInstance()->m_MainCamera->m_position = glm::vec3(60.0f * glm::cos(SceneTime * 0.1f), 60.0f, 60.0f * glm::sin(SceneTime * 0.1f));
         }
         else if (SceneTime >= 66.0f)
         {
             GraphicsMain::GetInstance()->isRunning = false;
             return;
-        }
-
-        if (SceneTime >= 22.0f)
-        {
-            m_DrawTrail = true;
         }
     }
 }
