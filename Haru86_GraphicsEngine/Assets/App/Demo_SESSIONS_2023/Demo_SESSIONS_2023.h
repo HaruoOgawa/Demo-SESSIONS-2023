@@ -14,6 +14,8 @@ namespace app
 
         std::shared_ptr<CBoxInstancing> m_BoxInstancing;
         std::shared_ptr<CTrailObject> m_TrailObject;
+
+        bool m_DrawTrail;
     public:
         Demo_SESSIONS_2023();
         ~Demo_SESSIONS_2023() = default;

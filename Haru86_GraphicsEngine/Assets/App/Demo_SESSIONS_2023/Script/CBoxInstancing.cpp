@@ -15,6 +15,7 @@ namespace app
 		m_AddedBoxHeight(1.0f),
 		m_Atten(0.5f),
 		m_CommonYOffset(-25.0f),
+		m_Brightness(2.0f),
 		
 		m_CubeMountain(nullptr),
 		m_GPGPU(nullptr),
@@ -31,13 +32,13 @@ namespace app
 			std::make_shared<TransformComponent>(),
 			PrimitiveType::CUBE,
 			RenderingSurfaceType::RASTERIZER,
-			std::string(
-#include "Assets/App/Demo_SESSIONS_2023/shader/InstancedBox.vert"
-			),
-			std::string(
-#include "Assets/App/Demo_SESSIONS_2023/shader/InstancedBox.frag"
-			)
-			);
+			std::string({
+				#include "Assets/App/Demo_SESSIONS_2023/shader/InstancedBox_VertComp_my.h"	
+			}),
+			std::string({
+				#include "Assets/App/Demo_SESSIONS_2023/shader/InstancedBox_FragComp.h"	
+			})
+		);
 
 		m_GPGPU = std::make_shared<MeshRendererComponent>(
 			std::make_shared<TransformComponent>(),
@@ -76,10 +77,12 @@ namespace app
 		m_CubeMountain->m_material->SetBufferToMat(m_cubeGroundBuffer, 3);
 	}
 
-	void CBoxInstancing::Update(float SceneTime) {
+	void CBoxInstancing::Update() {
+		float time = GraphicsMain::GetInstance()->m_SecondsTime;
+
 		auto& mat = m_GPGPU->m_material;
 		mat->SetActive();
-		mat->SetFloatUniform("_time", SceneTime);
+		mat->SetFloatUniform("_time", time);
 		mat->SetFloatUniform("_CommonYO", m_CommonYOffset);
 		mat->Dispatch(m_CubeNum / m_CubeThreads.x, 1, 1);
 	}
@@ -88,6 +91,7 @@ namespace app
 		m_CubeMountain->Draw([&]() {
 			m_CubeMountain->m_material->SetFloatUniform("_MaxBoxHeight", m_MaxBoxHeight);
 			m_CubeMountain->m_material->SetFloatUniform("_SideCubeNum", static_cast<float>(m_SideCubeNum));
+			m_CubeMountain->m_material->SetFloatUniform("_Brightness", m_Brightness);
 			}, GL_TRIANGLES, true, m_CubeNum);
 	}
 

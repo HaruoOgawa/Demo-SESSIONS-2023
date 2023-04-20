@@ -9,7 +9,6 @@ enum class PrimitiveType {
 	BOARD,
 	POINT,
 	CUBE,
-	CIRCLE,
 	ARROW,
 };
 

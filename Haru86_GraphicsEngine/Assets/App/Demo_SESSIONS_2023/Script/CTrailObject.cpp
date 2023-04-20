@@ -61,7 +61,7 @@ namespace app
 			PrimitiveType::ARROW,
 			RenderingSurfaceType::RASTERIZER,
 			std::string({
-				#include "../shader/Flow.vert"	
+				#include "../shader/Flow_VertComp_my.h"	
 				}),
 				shaderlib::Standard_frag
 				);
@@ -92,7 +92,7 @@ namespace app
 			PrimitiveType::POINT,
 			RenderingSurfaceType::RASTERIZER,
 			std::string({
-				#include "../shader/Segment.vert"	
+				#include "../shader/Segment_VertComp_my.h"	
 				}),
 				shaderlib::Standard_frag,
 				std::string({

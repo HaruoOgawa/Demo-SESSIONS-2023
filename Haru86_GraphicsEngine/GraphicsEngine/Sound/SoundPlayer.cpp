@@ -1,10 +1,11 @@
 #include "SoundPlayer.h"
 #include <Windows.h>
-#include <mmsystem.h>
 #include <array>
-#pragma comment(lib, "Winmm.lib")
+
+#ifdef _DEBUG
 #include <sstream>
 #include "GraphicsEngine/Message/Console.h"
+#endif // _DEBUG
 
 namespace sound 
 {
@@ -63,6 +64,7 @@ namespace sound
 		return true;
 	}
 
+#ifdef _DEBUG
 	void SoundPlayer::Skip(float SkipOffset)
 	{
 		float Offset = (SkipOffset * 1000.0f); // ƒ~ƒŠ•b‚É’¼‚·
@@ -86,6 +88,8 @@ namespace sound
 	{
 		m_IsMute = IsMute;
 	}
+#endif // _DEBUG
+
 
 	void SoundPlayer::Release() {
 		std::string cmd = "close " + m_Extension;

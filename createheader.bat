@@ -1,5 +1,5 @@
 set CurrentDir=%~dp0
-set AppDir=Haru86_GraphicsEngine\Assets\App\GradDemo 
+set AppDir=Haru86_GraphicsEngine\Assets\App\Demo_SESSIONS_2023\shader
 set BuiltDir=Haru86_GraphicsEngine\GraphicsEngine\Graphics\Shader
 
 for /R %AppDir% %%i in (*.vert) do copy %%~i %%~pi%%~ni_Vert.h
