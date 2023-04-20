@@ -74,7 +74,7 @@ bool GraphicsMain::Initialize() {
 
 void GraphicsMain::LoadData() {
 	//
-	m_SoundPlayer = std::make_shared<sound::SoundPlayer>();
+	
 
 	//
 	m_App->Start();
@@ -90,11 +90,14 @@ void GraphicsMain::LoadData() {
 	m_LoadingWaitTime = static_cast<float>(clock()) - AdjustAppLoadWatitTime;
 
 	//
-	/*if (m_SecondsTimeOffset != 0.0f && m_SecondsTimeOffset > 0.0f)
+	m_SoundPlayer = std::make_shared<sound::SoundPlayer>();
+#ifdef _DEBUG
+	if (m_SecondsTimeOffset != 0.0f && m_SecondsTimeOffset > 0.0f)
 	{
 		m_SoundPlayer->Skip(m_SecondsTimeOffset);
 	}
-	else*/
+	else
+#endif // _DEBUG
 	{
 		m_SoundPlayer->Play();
 	}

@@ -141,8 +141,7 @@ void main()
 
 	//
 	vec3 vc = normalize(v.xyz) * 0.5 + 0.5;
-	vec4 col = mix(vec4(vc, 1.0), vec4(hsv2rgb2(vec3( (vc.x+vc.y+vc.z)*0.33333 , 1.0, 1.0), 1.2), 1.0), Noise(vec2(float(bID), float(bID) * 10.0)) ) * 2.0;
-	col.rgb *= exp(-0.0001 * length(pos.xz * 100.0));
+	vec4 col = mix(vec4(vc, 1.0), vec4(hsv2rgb2(vec3( (vc.x+vc.y+vc.z)*0.33333 , 1.0, 1.0), 1.2), 1.0), Noise(vec2(float(bID), float(bID) * 10.0)) ) * 1.5;
 
 	//
 	trailData.Pos =  pos;

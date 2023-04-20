@@ -421,7 +421,6 @@ xcopy "$(ProjectDir)GraphicsEngine\Assets\Sound\stroke.wav" "$(OutDir)" /i /s /y
     <ClInclude Include="Assets\App\Demo_SESSIONS_2023\Script\CBoxInstancing.h" />
     <ClInclude Include="Assets\App\Demo_SESSIONS_2023\Script\CTrailObject.h" />
     <ClInclude Include="Assets\App\Demo_SESSIONS_2023\shader\Flow_Vert.h" />
-    <ClInclude Include="Assets\App\Demo_SESSIONS_2023\shader\Flow_VertComp.h" />
     <ClInclude Include="Assets\App\Demo_SESSIONS_2023\shader\Flow_VertComp_my.h" />
     <ClInclude Include="Assets\App\Demo_SESSIONS_2023\shader\InstancedBox_Frag.h" />
     <ClInclude Include="Assets\App\Demo_SESSIONS_2023\shader\InstancedBox_FragComp.h" />
